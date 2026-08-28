@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solving Polynomials with Polygons</title>
+<meta name="description" content="An interactive companion to the hyper-Catalan series solution of polynomial equations: subdigons, the series, a root playground, and the Geode.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&family=Spline+Sans+Mono:wght@400..600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="prose">
+    <p class="eyebrow">An interactive companion to three papers · 2025</p>
+    <h1>Solving Polynomials with Polygons</h1>
+    <p class="lede">In 2025, mathematicians found the roots of every polynomial equation
+    hiding inside counts of subdivided polygons. This page lets you play with the
+    discovery, and with two papers that grew out of it.</p>
+  </div>
+  <div class="hero-band" id="hero-band" aria-label="the eleven subdigons of the pentagon"></div>
+  <p class="plate-note" style="text-align:center">The eleven subdigons of the pentagon. The series below knows them as
+    <span class="math">5<i>t</i><sub>2</sub><sup>3</sup> + 5<i>t</i><sub>2</sub><i>t</i><sub>3</sub> + <i>t</i><sub>4</sub></span>.</p>
+  <div class="display-math hero-eq"><i>α</i> = 1 + <i>t</i><sub>2</sub><i>α</i><sup>2</sup> + <i>t</i><sub>3</sub><i>α</i><sup>3</sup> + <i>t</i><sub>4</sub><i>α</i><sup>4</sup> + ⋯</div>
+  <div style="text-align:center"><a class="hero-cta" href="#playground">skip to the playground ↓</a></div>
+</header>
+
+<section id="story">
+  <div class="prose">
+    <p class="eyebrow">I · The oldest problem in algebra</p>
+    <h2>Two hundred years of “unsolvable”</h2>
+    <p>Every quadratic surrenders to a formula written with square roots. Cubics and
+    quartics fell in Renaissance Italy, to formulas built the same way. Then the
+    pattern stopped: in 1824 Abel proved that no such formula exists for degree
+    five, and Galois explained why. Ever since, “unsolvable by radicals” has been
+    where the textbooks end the story.</p>
+    <p>But radicals were always just one kind of answer. In April 2025,
+    N.&nbsp;J.&nbsp;Wildberger and Dean Rubine published a different kind in
+    <i>The American Mathematical Monthly</i>: an explicit series that solves every
+    polynomial equation at once. Its coefficients do not come from nested roots.
+    They come from counting pictures.</p>
+    <p>The pictures are called <strong>subdigons</strong>: a polygon, cut into smaller
+    polygons by diagonals that never cross, with one edge marked as the roof
+    (drawn <span style="color:var(--accent)">blue</span> below). Fix how many triangles,
+    quadrilaterals, and pentagons you want, then ask how many different pictures
+    exist. That count is a <strong>hyper-Catalan number</strong>, and it is the whole
+    engine of the formula.</p>
+  </div>
+
+  <div class="plate" id="explorer">
+    <p class="plate-title">Plate I · Count the pictures</p>
+    <div class="face-key" id="face-key"></div>
+    <div class="controls" id="explorer-controls"></div>
+    <p class="count-line" id="explorer-count"></p>
+    <div class="gallery" id="explorer-gallery"></div>
+    <p class="plate-note" id="explorer-note"></p>
+  </div>
+
+  <div class="prose">
+    <p>Every one of those counts comes out of a single closed formula:</p>
+    <div class="display-math">
+      <i>C</i><sub><b>m</b></sub> =
+      <span class="frac">(2<i>m</i><sub>2</sub> + 3<i>m</i><sub>3</sub> + 4<i>m</i><sub>4</sub> + ⋯)<b>!</b></span>
+      <big>/</big>
+      <span class="frac">(1 + <i>m</i><sub>2</sub> + 2<i>m</i><sub>3</sub> + 3<i>m</i><sub>4</sub> + ⋯)<b>!</b> · <i>m</i><sub>2</sub><b>!</b> <i>m</i><sub>3</sub><b>!</b> <i>m</i><sub>4</sub><b>!</b> ⋯</span>
+    </div>
+    <p>Set everything except triangles to zero and it collapses to the Catalan
+    numbers 1, 1, 2, 5, 14, 42, the classical sequence that counts triangulations
+    of a polygon. The hyper-Catalan array is what the Catalan numbers look like
+    when you allow every shape at once.</p>
+  </div>
+</section>
+
+<section id="series">
+  <div class="prose">
+    <p class="eyebrow">II · The series</p>
+    <h2>Every coefficient is a picture count</h2>
+    <p>Now sort every subdigon by the size of its polygon. Level <i>d</i> collects
+    the ones with <i>d</i> + 2 vertices, and each level contributes one bracket to
+    a single series <span class="math"><b>S</b></span>. Click any term below to see
+    exactly which pictures its coefficient is counting.</p>
+  </div>
+  <div class="plate">
+    <p class="plate-title">Plate II · The series, level by level</p>
+    <div class="series-line" id="series-line"></div>
+    <div class="term-detail" id="term-detail" hidden></div>
+  </div>
+  <div class="prose">
+    <p>The Monthly paper’s theorem says this series is a solution
+    <span class="math"><i>α</i> = <b>S</b></span> of the equation at the top of the
+    page. The proof is in the pictures, and it runs on one move. The papers call
+    it the <strong>paneling operator</strong> <span class="math">∇̄<sub>k</sub></span>:
+    take <i>k</i> subdigons, glue them onto the free sides of a central
+    (<i>k</i>+1)-gon, and get one bigger subdigon back. Under the accounting map
+    <span class="math"><i>ψ</i></span> that move is exactly the product
+    <span class="math"><i>t</i><sub>k</sub><i>ψ</i>(s<sub>1</sub>)⋯<i>ψ</i>(s<sub>k</sub>)</span>,
+    so summing over every way to fill the slots gives
+    <span class="math"><i>t</i><sub>k</sub><b>S</b><sup>k</sup></span>, and the
+    equation is just an inventory of what can sit against the roof. Perform the
+    move yourself:</p>
+  </div>
+
+  <div class="plate" id="paneling">
+    <p class="plate-title">Plate II·b · The paneling operator ∇̄</p>
+    <div class="controls" id="pan-controls"></div>
+    <div class="controls" id="pan-slots" aria-label="operator slots"></div>
+    <p class="count-line" id="pan-psi"></p>
+    <div class="pan-stage" id="pan-stage"></div>
+    <p class="plate-note">Click a slot to swap in a different subdigon, then glue.
+    The operator’s central polygon keeps its color as it absorbs the pieces; the
+    pieces’ roofs become interior diagonals. Every diagonal you have seen on this
+    page is the scar of a ∇̄.</p>
+  </div>
+</section>
+
+<section id="playground">
+  <div class="prose">
+    <p class="eyebrow">III · The playground</p>
+    <h2>Watch polygons compute a root</h2>
+    <p>Here is the claim in action. Type any equation up to degree five. A change
+    of scale turns it into the geometric form, and the series, evaluated at the
+    resulting <span class="math"><i>t</i><sub>k</sub></span> values, converges to a
+    root as bigger polygons join the sum. When the
+    <span class="math"><i>t</i><sub>k</sub></span> are too big the series runs away
+    instead; the paper’s fix is the button below. Re-center the polynomial at your
+    best guess so far, and go again. Wildberger and Rubine demonstrate exactly
+    this on John Wallis’s cubic <span class="math"><i>x</i><sup>3</sup> − 2<i>x</i> − 5 = 0</span>,
+    a numerical benchmark since 1685; two passes of the series match the true root
+    to sixteen decimal places.</p>
+  </div>
+  <div class="plate">
+    <p class="plate-title">Plate III · The root playground</p>
+    <div class="controls" id="presets"></div>
+    <div class="poly-inputs" id="poly-inputs"></div>
+    <p class="plate-note" id="t-readout"></p>
+    <div class="controls" style="margin-top:0.75rem">
+      <div class="control" style="flex:1;min-width:220px">
+        <label for="level-slider">include polygons up to <span id="level-label"></span> vertices</label>
+        <input type="range" id="level-slider" min="2" max="14" value="10">
+      </div>
+      <button class="action" id="recenter">re-center at current estimate</button>
+      <button class="action" id="reset-center">reset</button>
+    </div>
+    <div class="playground-grid">
+      <div>
+        <div class="digits" id="digits-series"><span class="label">series estimate</span><span class="val"></span></div>
+        <div style="height:0.6rem"></div>
+        <div class="digits" id="digits-root"><span class="label">true root (Durand–Kerner)</span><span class="val"></span></div>
+        <p class="digit-status" id="digit-status"></p>
+      </div>
+      <div>
+        <div class="chart-wrap" id="err-chart"></div>
+        <p class="plate-note" id="chart-note">Error of the series estimate as larger polygons are allowed in, log scale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="papers-work">
+  <div class="prose">
+    <p class="eyebrow">IV · From the papers</p>
+    <h2>What a finite piece of infinity means</h2>
+    <p>The series is an infinite object, and infinite objects invite a sharp
+    question: what exactly is being claimed at any finite stage? The two papers
+    this site accompanies answer it. The first
+    (<a href="https://arxiv.org/abs/2507.20003">Mukewar, 2025</a>) proves the
+    infinite identity is really a family of finite identities, one for each level,
+    and develops the visual language this page borrows. The second
+    (<a href="https://arxiv.org/abs/2508.06739">Rubine and Mukewar, 2025</a>)
+    studies the powers <span class="math"><b>S</b><sup>r</sup></span>, which turn
+    out to count subdigons by the shape sitting against the roof.</p>
+  </div>
+
+  <div class="plate" id="central">
+    <p class="plate-title">Plate IV · Who sits against the roof</p>
+    <p style="margin-top:0">Of the <span class="math"><i>C</i><sub><b>m</b></sub></span> subdigons of a
+    given type, how many have a triangle as the central face, the one touching the
+    roof? The Involve paper’s Theorem 5 gives an exact fraction:
+    <span class="math"><i>r</i> · <i>m</i><sub>r</sub> · <i>C</i><sub><b>m</b></sub> / (<i>E</i><sub><b>m</b></sub> − 1)</span>
+    of them have an (<i>r</i>+1)-gon there. Pick a type and check.</p>
+    <div class="controls" id="central-controls"></div>
+    <div id="central-groups"></div>
+  </div>
+
+  <div class="plate" id="raney">
+    <p class="plate-title">Plate V · The necklace trick</p>
+    <p style="margin-top:0">The tidy fractions above exist because of a 1960 lemma
+    of George Raney, with roots in a 1947 counting trick. Write a cyclic word of
+    up-steps and down-steps whose total is +1. Then exactly one starting point
+    keeps the running sum positive all the way around; if the total is
+    <i>r</i>, exactly <i>r</i> starting points do. The Involve paper gives a short
+    new proof by parsing the circle directly. Click steps to flip them, rotate,
+    and watch which starting points survive.</p>
+    <div class="raney-row">
+      <div>
+        <div class="raney-word" id="raney-word"></div>
+        <div class="controls" style="margin-top:0.8rem">
+          <button class="action" id="raney-rotate">rotate ⟳</button>
+          <span class="badge" id="raney-badge"></span>
+        </div>
+      </div>
+      <div class="chart-wrap" style="flex:1;min-width:240px" id="raney-chart"></div>
+    </div>
+  </div>
+
+  <div class="plate" id="geode">
+    <p class="plate-title">Plate VI · The Geode</p>
+    <p style="margin-top:0">One more thing fell out of the Monthly paper. Group the
+    series by faces and a factorization appears:
+    <span class="math"><b>S</b> − 1 = (<i>t</i><sub>2</sub> + <i>t</i><sub>3</sub> + <i>t</i><sub>4</sub> + ⋯) · <b>G</b></span>.
+    Nothing about that division promises whole numbers, yet every entry of
+    <span class="math"><b>G</b></span> is a non-negative integer. Wildberger and
+    Rubine named the array the Geode. Its first row and column are the Catalan and
+    Fuss–Catalan numbers; about everything past them, Wildberger writes that
+    “the rest is an enigma.” The table below is computed live from the defining
+    recurrence and checked against the closed form proved in 2025.</p>
+    <div style="overflow-x:auto"><table class="geode-table" id="geode-table"></table></div>
+  </div>
+</section>
+
+<section id="papers">
+  <div class="prose">
+    <p class="eyebrow">V · Read the actual mathematics</p>
+    <h2>The papers</h2>
+  </div>
+  <div class="paper-cards">
+    <div class="paper-card">
+      <span class="venue">The American Mathematical Monthly · 132:5 · 2025</span>
+      <h3>A Hyper-Catalan Series Solution to Polynomial Equations, and the Geode</h3>
+      <p>N. J. Wildberger and Dean Rubine. The source of the series, the subdigons,
+      and the Geode.</p>
+      <a href="https://doi.org/10.1080/00029890.2025.2460966">doi:10.1080/00029890.2025.2460966 ↗</a>
+    </div>
+    <div class="paper-card">
+      <span class="venue">Journal of Student Research · arXiv:2507.20003</span>
+      <h3>Finite Interpretations of a Hyper-Catalan Series Solution to Polynomial Equations and Visualizations</h3>
+      <p>Pratham Mukewar. The finite identities behind the infinite series, and the
+      animation framework this page reimplements.</p>
+      <a href="https://arxiv.org/abs/2507.20003">arXiv:2507.20003 ↗</a>
+    </div>
+    <div class="paper-card">
+      <span class="venue">Submitted to Involve · arXiv:2508.06739</span>
+      <h3>Finite Interpretation of the Hyper-Catalan Series Zero and its Powers</h3>
+      <p>Dean Rubine and Pratham Mukewar. Powers of the series, central polygons,
+      and a new proof of Raney’s lemma.</p>
+      <a href="https://arxiv.org/abs/2508.06739">arXiv:2508.06739 ↗</a>
+    </div>
+  </div>
+  <div class="prose">
+    <p style="font-size:0.95rem;color:var(--ink-2)">Background reading: the UNSW
+    newsroom piece on the Monthly paper,
+    <a href="https://www.unsw.edu.au/newsroom/news/2025/05/mathematician-solves-algebras-oldest-problem-using-intriguing-new-number-sequences">“Mathematician solves algebra’s oldest problem”</a> (May 2025),
+    and Wildberger’s <a href="https://njwildberger.com/tag/geode/">blog posts on the Geode</a>.</p>
+  </div>
+</section>
+
+<footer>
+  <p class="math"><i>α</i> = 1 + <i>t</i><sub>2</sub> + (2<i>t</i><sub>2</sub><sup>2</sup> + <i>t</i><sub>3</sub>) + (5<i>t</i><sub>2</sub><sup>3</sup> + 5<i>t</i><sub>2</sub><i>t</i><sub>3</sub> + <i>t</i><sub>4</sub>) + ⋯</p>
+  <p>Made by Pratham Mukewar · Nashua, NH → Cambridge, MA · 2026<br>
+  Every number on this page is computed in your browser. On load, the site
+  re-enumerates the small subdigons and checks them against the closed formulas:
+  <span id="self-check">running self-check…</span></p>
+  <p><a href="https://github.com/MathMaster1296">GitHub</a> · MIT license</p>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

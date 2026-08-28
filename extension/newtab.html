@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subdigon of the Day</title>
+<style>
+:root {
+  --paper: #FBFAF7; --plate: #FFFFFF; --ink: #1C2026; --ink-2: #575C64;
+  --muted: #8B8E94; --hairline: #E5E3DC; --accent: #2a78d6;
+  --f3: #2a78d6; --f4: #eb6834; --f5: #1baf7a; --f6: #eda100; --f7: #e87ba4;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #14171C; --plate: #1B1F26; --ink: #E9E7E1; --ink-2: #B4B8BF;
+    --muted: #878B92; --hairline: #2A2F37; --accent: #3987e5;
+    --f3: #3987e5; --f4: #d95926; --f5: #199e70; --f6: #c98500; --f7: #d55181;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh; display: grid; place-items: center;
+  background: var(--paper); color: var(--ink);
+  font-family: "Iowan Old Style", Georgia, serif;
+}
+.card {
+  text-align: center; padding: 2.5rem 2rem; max-width: 30rem;
+}
+.eyebrow {
+  font-family: ui-monospace, Menlo, monospace; font-size: 0.7rem;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
+}
+.subdigon { display: block; margin: 1.2rem auto; }
+.subdigon .face-3 { fill: color-mix(in srgb, var(--f3) 22%, transparent); }
+.subdigon .face-4 { fill: color-mix(in srgb, var(--f4) 22%, transparent); }
+.subdigon .face-5 { fill: color-mix(in srgb, var(--f5) 24%, transparent); }
+.subdigon .face-6 { fill: color-mix(in srgb, var(--f6) 24%, transparent); }
+.subdigon .face-7 { fill: color-mix(in srgb, var(--f7) 24%, transparent); }
+.subdigon .outline { fill: none; stroke: var(--ink); stroke-width: 1.7; stroke-linejoin: round; }
+.subdigon .diagonal { stroke: var(--ink); stroke-width: 1.1; opacity: 0.85; }
+.subdigon .root-edge { stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; }
+.subdigon .vertex { fill: var(--ink); }
+h1 { font-size: 1.15rem; font-weight: 600; margin: 0.2rem 0; }
+p { color: var(--ink-2); font-size: 0.95rem; line-height: 1.55; margin: 0.4rem 0; }
+.count { font-family: ui-monospace, Menlo, monospace; color: var(--accent); font-weight: 600; }
+.math { font-family: "STIX Two Text", "Times New Roman", serif; font-size: 1.05rem; }
+a { color: var(--accent); }
+.foot { margin-top: 1.4rem; font-size: 0.8rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main class="card">
+  <p class="eyebrow" id="date"></p>
+  <div id="figure"></div>
+  <h1 id="title"></h1>
+  <p id="detail"></p>
+  <p class="foot">One of the pictures that solve polynomial equations ·
+  <a id="site-link" href="https://mathmaster1296.github.io/geode/">why this counts ↗</a></p>
+</main>
+<script type="module" src="newtab.js"></script>
+</body>
+</html>
