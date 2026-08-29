@@ -1,5 +1,7 @@
 # Solving Polynomials with Polygons
 
+**Live at [mathmaster1296.github.io/geode](https://mathmaster1296.github.io/geode/).**
+
 An interactive companion to the hyper-Catalan series solution of polynomial
 equations — the combinatorics behind Wildberger–Rubine (2025) and the
 follow-up papers by Mukewar & Rubine — as a website you can *play with*:
