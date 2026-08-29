@@ -224,7 +224,7 @@ function runPlayground() {
   const last = incs[incs.length - 1];
   let badge;
   if (incs.length >= 3 && incs.at(-1) > incs.at(-2) && incs.at(-2) > incs.at(-3)) {
-    badge = '<span class="badge bad">series is diverging → press re-center</span>';
+    badge = '<span class="badge bad">series is diverging: press re-center</span>';
   } else if (last < 1e-13) {
     badge = '<span class="badge ok">converged at this level</span>';
   } else {
@@ -395,8 +395,8 @@ function renderRaney() {
   const isValid = valid.includes(raney.offset % L);
   $('raney-badge').className = 'badge ' + (total > 0 ? (isValid ? 'ok' : 'bad') : 'bad');
   $('raney-badge').textContent = total > 0
-    ? `sum = +${total} → ${valid.length} of ${L} starts stay positive · this one: ${isValid ? 'yes' : 'no'}`
-    : `sum = ${total} → no start can stay positive`;
+    ? `sum = +${total}, so ${valid.length} of ${L} starts stay positive · this one: ${isValid ? 'yes' : 'no'}`
+    : `sum = ${total}, so no start can stay positive`;
 
   // staircase of the current rotation
   const W = 300, H = 150, pad = 16;

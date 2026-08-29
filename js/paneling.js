@@ -1,4 +1,4 @@
-// Plate II·b — the paneling operator ∇̄_k from Mukewar (2025) / Rubine–Mukewar
+// Plate II·b: the paneling operator ∇̄_k from Mukewar (2025) and Rubine–Mukewar
 // (2025). ∇̄_k takes k subdigons, glues them onto the k non-roof sides of a
 // central (k+1)-gon, and returns one bigger subdigon; ψ turns that move into
 // the product t_k·ψ(s₁)⋯ψ(s_k). The animation follows the paper's pipeline:
@@ -70,8 +70,8 @@ function renderPsi() {
   const type = typeOf(m.faces);
   const C = hyperCatalan(type);
   el('pan-psi').innerHTML =
-    `<span class="math">ψ: <i>t</i><sub>${pan.k}</sub> · ${parts} = ${termHTML(type)}</span>
-     — one of the <span class="count-big">${C}</span> subdigons counted in the term
+    `<span class="math">ψ: <i>t</i><sub>${pan.k}</sub> · ${parts} = ${termHTML(type)}</span>.
+     The glued picture is one of the <span class="count-big">${C}</span> counted by the term
      <span class="math">${C === 1n ? '' : C}${termHTML(type)}</span>.`;
 }
 

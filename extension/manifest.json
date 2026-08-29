@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Subdigon of the Day",
   "version": "1.0.0",
-  "description": "Every new tab: one subdivided polygon, the hyper-Catalan number that counts it, and the polynomial-solving series term it lives in.",
+  "description": "Shows a new subdivided polygon each day, with the hyper-Catalan number that counts it and the polynomial-solving series term it belongs to.",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   }

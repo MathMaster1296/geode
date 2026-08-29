@@ -28,6 +28,7 @@ document.getElementById('date').textContent = today.toLocaleDateString(undefined
 document.getElementById('figure').innerHTML = renderSubdigon(pick, n, { size: 260 });
 document.getElementById('title').innerHTML = `${describeType(m)}`;
 document.getElementById('detail').innerHTML =
-  `One of exactly <span class="count">${C}</span> ways to subdivide this ${n}-gon like that.
-   In the series that solves polynomial equations, today's picture lives in the term
+  `There are exactly <span class="count">${C}</span> ways to subdivide this ${n}-gon
+   like that, and today's picture is one of them. In the series that solves
+   polynomial equations, it lives in the term
    <span class="math">${C}${termHTML(m)}</span>.`;
