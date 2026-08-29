@@ -18,6 +18,20 @@ follow-up papers by Mukewar & Rubine — as a website you can *play with*:
 No frameworks, no build step, no dependencies — plain ES modules, hostable on
 GitHub Pages as-is.
 
+## The papers
+
+The mathematics on the site comes from, and links back to:
+
+- Pratham Mukewar, **Finite Interpretations of a Hyper-Catalan Series Solution
+  to Polynomial Equations and Visualizations**, Journal of Student Research —
+  [arXiv:2507.20003](https://arxiv.org/abs/2507.20003)
+- Dean Rubine and Pratham Mukewar, **Finite Interpretation of the Hyper-Catalan
+  Series Zero and its Powers**, submitted to Involve —
+  [arXiv:2508.06739](https://arxiv.org/abs/2508.06739)
+- N. J. Wildberger and Dean Rubine, **A Hyper-Catalan Series Solution to
+  Polynomial Equations, and the Geode**, The American Mathematical Monthly
+  132:5 (2025) — [doi:10.1080/00029890.2025.2460966](https://doi.org/10.1080/00029890.2025.2460966)
+
 ## Run locally
 
 ```
