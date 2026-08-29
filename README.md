@@ -70,3 +70,12 @@ cubic whose root is sin 10°.
 | `js/app.js` | page wiring |
 | `extension/` | the "Subdigon of the Day" new-tab Chrome extension |
 | `build.mjs` | bundles everything into `dist/single.html` |
+
+## More from me
+
+- [Multiway Register Machine Explorer](https://mathmaster1296.github.io/multiway-register-machines/):
+  multiway register machines running in the browser, companion code for my paper
+- [MindMasters Academy](https://mathmaster1296.github.io/mindmasters/): math
+  and chess training for K-8 competition students, in one offline HTML file
+- [DyslexAid](https://github.com/MathMaster1296/dyslexaid): a Chrome extension
+  that makes any web page easier to read
