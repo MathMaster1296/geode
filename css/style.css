@@ -122,9 +122,25 @@ section { padding: 4.5rem 0 1rem; }
 
 /* ---------- hero ---------- */
 header.hero {
+  position: relative;
   padding: 5.5rem 0 3rem;
   text-align: center;
 }
+.theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  background: var(--plate);
+  color: var(--ink-2);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 0.5em 1em;
+  cursor: pointer;
+}
+.theme-toggle:hover { border-color: var(--accent); }
 .hero h1 {
   font-size: clamp(2.5rem, 7vw, 4.3rem);
   font-weight: 500;
@@ -310,8 +326,7 @@ button.preset[aria-pressed="true"] { background: var(--ink); color: var(--paper)
 /* ---------- playground ---------- */
 .poly-inputs { display: flex; flex-wrap: wrap; gap: 0.6rem 0.4rem; align-items: center; font-family: var(--math); font-size: 1.15rem; }
 .poly-inputs .co { display: inline-flex; flex-direction: column; align-items: center; gap: 0.2rem; }
-.playground-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
-@media (max-width: 760px) { .playground-grid { grid-template-columns: 1fr; } }
+.playground-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
 
 .digits {
   font-family: var(--mono);
@@ -344,6 +359,15 @@ button.preset[aria-pressed="true"] { background: var(--ink); color: var(--paper)
 .chart-wrap .baseline { stroke: var(--muted); stroke-width: 1; }
 .chart-wrap .err-line { stroke: var(--accent); stroke-width: 2; fill: none; stroke-linejoin: round; }
 .chart-wrap .err-dot { fill: var(--accent); stroke: var(--plate); stroke-width: 2; }
+.chart-wrap .root-dot { fill: var(--f3); stroke: var(--plate); stroke-width: 1.5; }
+.chart-wrap .root-target { fill: none; stroke: var(--accent); stroke-width: 2; }
+.chart-wrap .est-marker line { stroke: var(--good); stroke-width: 2.2; stroke-linecap: round; }
+.chart-wrap .est-trail { fill: none; stroke: var(--good); stroke-width: 1.2; opacity: 0.45; }
+
+/* ---------- finite identity ---------- */
+.fid-zero { color: var(--muted); }
+.fid-survivor { color: var(--accent); font-weight: 600; white-space: nowrap; }
+
 .chart-tip {
   position: absolute;
   pointer-events: none;

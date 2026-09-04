@@ -1,8 +1,12 @@
 import {
   enumerateDissections, typeOf, typeKey, hyperCatalan, vertexCount,
   subdigonsOfType, typeVectors, centralFace, centralCount, edgeCount, geodeBiTri,
+  powerCoeff,
 } from '../js/subdigons.js';
-import { toGeometricForm, seriesPartials, targetRoot, evalPoly, shiftPoly } from '../js/solver.js';
+import {
+  toGeometricForm, seriesPartials, targetRoot, evalPoly, shiftPoly,
+  residualCoeffs, newtonStep,
+} from '../js/solver.js';
 
 let failures = 0;
 function check(name, cond, detail = '') {
@@ -135,6 +139,57 @@ check('subdigonsOfType {2:1,3:1} has 5 elements', subdigonsOfType({ 2: 1, 3: 1 }
   const x = scale * [...partials.values()].pop();
   const target = Math.sin(Math.PI / 18);
   check('sin(10°) via series', Math.abs(x - target) < 1e-6, `got ${x} want ${target}`);
+}
+
+// --- Theorem 7 (powers of S): r = 1 recovers the hyper-Catalan numbers
+for (const m of [{}, { 2: 2 }, { 2: 1, 3: 1 }, { 3: 2 }, { 2: 2, 4: 1 }]) {
+  check(`powerCoeff(1, ${typeKey(m) || 'null'}) = C_m`, powerCoeff(1, m) === hyperCatalan(m));
+}
+
+// --- S² in the Catalan case is the convolution of Catalan numbers
+{
+  const cat = n => hyperCatalan(n ? { 2: n } : {});
+  for (let n = 0; n <= 6; n++) {
+    let conv = 0n;
+    for (let i = 0; i <= n; i++) conv += cat(i) * cat(n - i);
+    check(`[t2^${n}] S² = Catalan convolution`, powerCoeff(2, n ? { 2: n } : {}) === conv,
+      `formula ${powerCoeff(2, n ? { 2: n } : {})} vs ${conv}`);
+  }
+}
+
+// --- Theorem 6: [t^m] S^r counts subdigons of type m + e_r with a central (r+1)-gon
+for (const [r, m] of [[2, { 2: 2 }], [2, { 3: 1 }], [3, { 2: 1 }], [3, { 2: 2 }], [4, { 2: 1 }]]) {
+  const big = { ...m, [r]: (m[r] || 0) + 1 };
+  const n = vertexCount(big);
+  const count = subdigonsOfType(big).filter(d => centralFace(d, n).length === r + 1).length;
+  check(`Theorem 6 for r=${r}, m=${typeKey(m)}`, powerCoeff(r, m) === BigInt(count),
+    `formula ${powerCoeff(r, m)} vs enumerated ${count}`);
+}
+
+// --- finite identity: exact cancellation through degree D, survivor = next coefficient
+{
+  const r2 = residualCoeffs(2, 5);
+  check('identity zeros (triangles, D=5)', r2.slice(0, 6).every(c => c === 0n),
+    r2.slice(0, 6).join(','));
+  check('identity survivor is C6 = 132', r2[6] === 132n, `got ${r2[6]}`);
+  const r3 = residualCoeffs(3, 3);
+  check('identity zeros (quadrilaterals, D=3)', r3.slice(0, 4).every(c => c === 0n));
+  check('identity survivor is Fuss 55', r3[4] === hyperCatalan({ 3: 4 }), `got ${r3[4]}`);
+  const r4 = residualCoeffs(4, 4);
+  check('identity zeros (pentagons, D=4)', r4.slice(0, 5).every(c => c === 0n));
+  check('identity survivor matches C[m4=5]', r4[5] === hyperCatalan({ 4: 5 }), `got ${r4[5]}`);
+}
+
+// --- Newton step moves the center toward the quintic's root
+{
+  const c = [-1, -1, 0, 0, 0, 1]; // x⁵ − x − 1
+  const a1 = newtonStep(c, 1);
+  check('newtonStep from 1 gives 1.25', Math.abs(a1 - 1.25) < 1e-12, `got ${a1}`);
+  const { ts, scale } = toGeometricForm(shiftPoly(c, 1.25));
+  const { partials } = seriesPartials(ts, 20);
+  const x = 1.25 + scale * [...partials.values()].pop();
+  check('series solves x⁵−x−1 after one Newton hop', Math.abs(evalPoly(c, x)) < 1e-10,
+    `residual ${evalPoly(c, x)} at x=${x}`);
 }
 
 console.log(failures ? `\n${failures} FAILURES` : '\nall tests passed');

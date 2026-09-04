@@ -45,6 +45,39 @@ export function seriesPartials(ts, maxVertices) {
   return { terms, partials };
 }
 
+// Exact residual of the finite identity (Theorem 2 of both finite-interpretation
+// papers), in the single-shape case. Truncate S to degree D in t, plug it into
+// h(α) = 1 − α + t·α^k, and expand with BigInt arithmetic: coefficients 0..D
+// cancel to exactly 0, and the first survivor at degree D+1 is the next
+// coefficient of S itself. Returns the residual coefficients for degrees 0..D+1.
+export function residualCoeffs(k, D) {
+  const s = [];
+  for (let n = 0; n <= D; n++) s.push(hyperCatalan(n ? { [k]: n } : {}));
+  const cap = D + 2;
+  let pow = [1n];
+  for (let i = 0; i < k; i++) {
+    const next = Array(Math.min(cap, pow.length + s.length - 1)).fill(0n);
+    for (let a = 0; a < pow.length; a++) {
+      for (let b = 0; b < s.length && a + b < cap; b++) next[a + b] += pow[a] * s[b];
+    }
+    pow = next;
+  }
+  const res = Array(cap).fill(0n);
+  res[0] = 1n;
+  for (let n = 0; n <= D; n++) res[n] -= s[n];
+  for (let n = 0; n + 1 < cap && n < pow.length; n++) res[n + 1] += pow[n];
+  return res;
+}
+
+// One Newton step for p at a: used to move the expansion center toward a root
+// when the series diverges and its own estimate cannot be trusted.
+export function newtonStep(coeffs, a) {
+  let p = 0, dp = 0;
+  for (let i = coeffs.length - 1; i >= 1; i--) dp = dp * a + i * coeffs[i];
+  for (let i = coeffs.length - 1; i >= 0; i--) p = p * a + coeffs[i];
+  return dp === 0 ? a : a - p / dp;
+}
+
 // Coefficients of p(a + y) as a polynomial in y (Taylor shift, via repeated
 // synthetic division). This is the "bootstrap" step from Wildberger–Rubine:
 // when the t_k are too big for the series to converge, re-center the

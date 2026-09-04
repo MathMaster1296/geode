@@ -2,12 +2,37 @@ import {
   enumerateDissections, typeOf, typeKey, hyperCatalan, vertexCount, edgeCount,
   faceCount, subdigonsOfType, typeVectors, centralCount, geodeBiTri,
 } from './subdigons.js';
-import { toGeometricForm, seriesPartials, shiftPoly, evalPoly, targetRoot } from './solver.js';
+import { toGeometricForm, seriesPartials, shiftPoly, evalPoly, allRoots, newtonStep } from './solver.js';
 import { renderSubdigon, describeType, termHTML } from './viz.js';
 import './paneling.js';
+import './identity.js';
+import './powers.js';
 
 const $ = id => document.getElementById(id);
 const FACE_LABELS = { 2: 'triangle', 3: 'quadrilateral', 4: 'pentagon', 5: 'hexagon' };
+
+/* ---------- theme toggle: auto → light → dark ---------- */
+{
+  const root = document.documentElement;
+  let saved = null;
+  try { saved = localStorage.getItem('geode-theme'); } catch { /* storage unavailable */ }
+  if (saved === 'light' || saved === 'dark') root.dataset.theme = saved;
+  const btn = $('theme-toggle');
+  if (btn) {
+    const label = () => { btn.textContent = 'theme: ' + (root.dataset.theme || 'auto'); };
+    label();
+    btn.addEventListener('click', () => {
+      const next = { '': 'light', light: 'dark', dark: '' }[root.dataset.theme || ''];
+      if (next) root.dataset.theme = next;
+      else delete root.dataset.theme;
+      try {
+        if (next) localStorage.setItem('geode-theme', next);
+        else localStorage.removeItem('geode-theme');
+      } catch { /* fine without persistence */ }
+      label();
+    });
+  }
+}
 
 const dissectionCache = new Map();
 function dissections(n) {
@@ -160,7 +185,7 @@ const PRESETS = [
   { id: 'wallis', label: 'Wallis 1685 · x³−2x−5', coeffs: [-5, -2, 0, 1, 0, 0], center: 2 },
   { id: 'sin10', label: 'sin 10° · 8x³−6x+1', coeffs: [1, -6, 0, 8, 0, 0], center: 0 },
   { id: 'catalan', label: 'pure Catalan · 0.2x²−x+1', coeffs: [1, -1, 0.2, 0, 0, 0], center: 0 },
-  { id: 'quintic', label: 'a quintic', coeffs: [-0.3, 1, 0, 0.2, 0, 0.1], center: 0 },
+  { id: 'quintic', label: 'x⁵−x−1 · no radical formula', coeffs: [-1, -1, 0, 0, 0, 1], center: 1 },
 ];
 const play = { coeffs: [...PRESETS[0].coeffs], center: PRESETS[0].center, baseCenter: PRESETS[0].center, maxV: 10, preset: 'wallis' };
 
@@ -212,7 +237,14 @@ function runPlayground() {
   const S = entries[entries.length - 1][1];
   const est = play.center + scale * S;
 
-  const root = targetRoot(play.coeffs, est);
+  const roots = allRoots(play.coeffs);
+  const ref = Number.isFinite(est) ? est : -play.coeffs[0] / play.coeffs[1];
+  let root = { re: ref, im: 0 };
+  let bestDist = Infinity;
+  for (const [re, im] of roots) {
+    const dist = Math.hypot(re - ref, im);
+    if (dist < bestDist) { bestDist = dist; root = { re, im }; }
+  }
   const isComplex = Math.abs(root.im) > 1e-8;
 
   const tline = Object.entries(ts).map(([k, v]) =>
@@ -223,7 +255,8 @@ function runPlayground() {
   for (let i = 1; i < entries.length; i++) incs.push(Math.abs(entries[i][1] - entries[i - 1][1]));
   const last = incs[incs.length - 1];
   let badge;
-  if (incs.length >= 3 && incs.at(-1) > incs.at(-2) && incs.at(-2) > incs.at(-3)) {
+  play.diverging = incs.length >= 3 && incs.at(-1) > incs.at(-2) && incs.at(-2) > incs.at(-3);
+  if (play.diverging) {
     badge = '<span class="badge bad">series is diverging: press re-center</span>';
   } else if (last < 1e-13) {
     badge = '<span class="badge ok">converged at this level</span>';
@@ -250,6 +283,8 @@ function runPlayground() {
     const x = play.center + scale * s;
     return { V, err: Math.max(Math.hypot(x - root.re, root.im), 1e-17) };
   }));
+  drawRootsPlane(roots, root, entries.map(([, s]) => play.center + scale * s));
+  updateHash();
 }
 function showPlayError(msg) {
   $('t-readout').innerHTML = `<span class="badge bad">${msg}</span>`;
@@ -257,6 +292,54 @@ function showPlayError(msg) {
   $('digits-root').querySelector('.val').textContent = '·';
   $('digit-status').textContent = '';
   $('err-chart').innerHTML = '';
+  if ($('roots-plane')) $('roots-plane').innerHTML = '';
+}
+
+// Every root of p in the complex plane, the targeted root ringed, and the
+// series estimates walking along the real axis toward it.
+function drawRootsPlane(roots, target, trail) {
+  const wrap = $('roots-plane');
+  if (!wrap) return;
+  const W = 260, H = 260, cx = W / 2, cy = H / 2;
+  let R = 1e-6;
+  for (const [re, im] of roots) R = Math.max(R, Math.abs(re), Math.abs(im));
+  const last = trail[trail.length - 1];
+  if (Number.isFinite(last)) R = Math.max(R, Math.abs(last));
+  R *= 1.25;
+  const X = re => cx + (re / R) * (W / 2 - 14);
+  const Y = im => cy - (im / R) * (H / 2 - 14);
+  let step = Math.pow(10, Math.floor(Math.log10(R)));
+  if (R / step > 5) step *= 2;
+  if (R / step < 2) step /= 2;
+  let grid = '';
+  for (let g = step; g < R; g += step) {
+    for (const s of [g, -g]) {
+      grid += `<line class="grid" x1="${X(s).toFixed(1)}" y1="0" x2="${X(s).toFixed(1)}" y2="${H}"/>
+        <line class="grid" x1="0" y1="${Y(s).toFixed(1)}" x2="${W}" y2="${Y(s).toFixed(1)}"/>`;
+    }
+  }
+  const trailPts = trail.filter(Number.isFinite).map(x => `${X(x).toFixed(1)},${cy}`);
+  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="roots of the polynomial in the complex plane">
+    ${grid}
+    <line class="baseline" x1="0" y1="${cy}" x2="${W}" y2="${cy}"/>
+    <line class="baseline" x1="${cx}" y1="0" x2="${cx}" y2="${H}"/>
+    <text class="axis-label" x="${W - 6}" y="${cy - 5}" text-anchor="end">Re</text>
+    <text class="axis-label" x="${cx + 5}" y="11">Im</text>
+    <text class="axis-label" x="6" y="${H - 6}">grid step ${+step.toPrecision(2)}</text>
+    ${roots.map(([re, im]) =>
+      `<circle class="root-dot" r="4.5" cx="${X(re).toFixed(1)}" cy="${Y(im).toFixed(1)}">
+        <title>${+re.toPrecision(6)} ${im >= 0 ? '+' : '−'} ${+Math.abs(im).toPrecision(6)}i</title>
+      </circle>`).join('')}
+    <circle class="root-target" r="9" cx="${X(target.re).toFixed(1)}" cy="${Y(target.im).toFixed(1)}"/>
+    ${trailPts.length > 1 ? `<polyline class="est-trail" points="${trailPts.join(' ')}"/>` : ''}
+    ${Number.isFinite(last) ? `<g class="est-marker" transform="translate(${X(last).toFixed(1)},${cy})">
+      <line x1="-5" y1="-5" x2="5" y2="5"/><line x1="-5" y1="5" x2="5" y2="-5"/></g>` : ''}
+  </svg>`;
+}
+
+function updateHash() {
+  const f = v => String(+Number(v).toPrecision(12));
+  history.replaceState(null, '', `#q=${play.coeffs.map(f).join('_')}&a=${f(play.center)}&n=${play.maxV}`);
 }
 function drawErrChart(points) {
   const W = 460, H = 258, L = 46, R = 14, T = 12, B = 42;
@@ -301,16 +384,50 @@ function drawErrChart(points) {
 $('level-slider').addEventListener('input', e => { play.maxV = +e.target.value; runPlayground(); });
 $('recenter').addEventListener('click', () => {
   const shifted = shiftPoly(play.coeffs, play.center);
-  if (!shifted[1]) return;
+  if (!shifted[1]) {
+    play.center = newtonStep(play.coeffs, play.center + 1e-3);
+    return runPlayground();
+  }
   try {
     const { ts, scale } = toGeometricForm(shifted);
     const { partials } = seriesPartials(ts, play.maxV);
     const S = [...partials.values()].pop();
-    if (Number.isFinite(S)) play.center = play.center + scale * S;
+    if (play.diverging || !Number.isFinite(S)) {
+      // a diverging series gives a garbage estimate; hop with one Newton step instead
+      play.center = newtonStep(play.coeffs, play.center);
+    } else {
+      play.center = play.center + scale * S;
+    }
     runPlayground();
-  } catch { /* leave as is */ }
+  } catch {
+    play.center = newtonStep(play.coeffs, play.center);
+    runPlayground();
+  }
 });
 $('reset-center').addEventListener('click', () => { play.center = play.baseCenter; runPlayground(); });
+$('copy-link').addEventListener('click', () => {
+  const btn = $('copy-link');
+  navigator.clipboard.writeText(location.href).then(() => {
+    btn.textContent = 'copied ✓';
+    setTimeout(() => { btn.textContent = 'copy link'; }, 1600);
+  }).catch(() => {
+    btn.textContent = 'copy the address bar';
+    setTimeout(() => { btn.textContent = 'copy link'; }, 2500);
+  });
+});
+(function initFromHash() {
+  const h = new URLSearchParams(location.hash.slice(1));
+  const q = h.get('q');
+  if (!q) return;
+  const cs = q.split('_').map(Number);
+  if (cs.length !== 6 || cs.some(v => !Number.isFinite(v))) return;
+  play.coeffs = cs;
+  play.center = Number(h.get('a')) || 0;
+  play.baseCenter = play.center;
+  play.maxV = Math.min(14, Math.max(2, Math.round(Number(h.get('n')) || 10)));
+  $('level-slider').value = play.maxV;
+  play.preset = null;
+})();
 renderPresets();
 renderPolyInputs();
 runPlayground();

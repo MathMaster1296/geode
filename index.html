@@ -13,6 +13,7 @@
 <body>
 
 <header class="hero">
+  <button class="theme-toggle" id="theme-toggle" aria-label="switch color theme">theme: auto</button>
   <div class="prose">
     <p class="eyebrow">Geode · an interactive companion to three papers · 2025</p>
     <h1>Solving Polynomials with Polygons</h1>
@@ -67,8 +68,8 @@
       <span class="frac">(1 + <i>m</i><sub>2</sub> + 2<i>m</i><sub>3</sub> + 3<i>m</i><sub>4</sub> + ⋯)<b>!</b> · <i>m</i><sub>2</sub><b>!</b> <i>m</i><sub>3</sub><b>!</b> <i>m</i><sub>4</sub><b>!</b> ⋯</span>
     </div>
     <p>Set everything except triangles to zero and it collapses to the Catalan
-    numbers 1, 1, 2, 5, 14, 42, the classical sequence that counts triangulations
-    of a polygon. The hyper-Catalan array is what the Catalan numbers look like
+    numbers <a href="https://oeis.org/A000108">1, 1, 2, 5, 14, 42</a>, the
+    classical sequence that counts triangulations of a polygon. The hyper-Catalan array is what the Catalan numbers look like
     when you allow every shape at once.</p>
   </div>
 </section>
@@ -142,6 +143,7 @@
       </div>
       <button class="action" id="recenter">re-center at current estimate</button>
       <button class="action" id="reset-center">reset</button>
+      <button class="action" id="copy-link">copy link</button>
     </div>
     <div class="playground-grid">
       <div>
@@ -154,7 +156,29 @@
         <div class="chart-wrap" id="err-chart"></div>
         <p class="plate-note" id="chart-note">The error of the series estimate shrinks as larger polygons are allowed in (log scale).</p>
       </div>
+      <div>
+        <div class="chart-wrap" id="roots-plane"></div>
+        <p class="plate-note">Every root of the equation in the complex plane. The cross is the
+        series estimate, and it walks toward the circled root as the slider grows.</p>
+      </div>
     </div>
+  </div>
+
+  <div class="prose">
+    <p>There is a sharper way to say what just happened, and it is the claim both
+    finite-interpretation papers share. Convergence is a statement about limits,
+    but the identity is exact long before any limit: cut
+    <span class="math"><b>S</b></span> off at a finite degree, plug the stump into
+    the equation, and every coefficient up to the cutoff cancels to exactly zero.
+    Nothing here is rounded. The first coefficient that survives is the next
+    hyper-Catalan number, waiting to be read off.</p>
+  </div>
+  <div class="plate" id="identity">
+    <p class="plate-title">Plate III·b · The finite identity</p>
+    <div class="controls" id="fid-controls"></div>
+    <p class="series-line" id="fid-series" style="font-size:1.05rem"></p>
+    <p class="series-line" id="fid-residual" style="font-size:1.05rem"></p>
+    <p class="plate-note" id="fid-note"></p>
   </div>
 </section>
 
@@ -182,6 +206,21 @@
     of them have an (<i>r</i>+1)-gon there. Pick a type and check.</p>
     <div class="controls" id="central-controls"></div>
     <div id="central-groups"></div>
+  </div>
+
+  <div class="prose">
+    <p>The central face also explains the powers of the series.
+    <span class="math"><b>S</b><sup>r</sup></span> has its own combinatorial
+    reading: each of its coefficients counts subdigons that carry one extra
+    (<i>r</i>+1)-gon against the roof. Theorem 7 of the Involve paper compresses
+    that reading into a closed formula, and every term below checks the formula
+    against a live enumeration when you click it.</p>
+  </div>
+  <div class="plate" id="powers">
+    <p class="plate-title">Plate IV·b · Powers of the series</p>
+    <div class="controls" id="pow-controls"></div>
+    <div class="series-line" id="pow-line"></div>
+    <div class="term-detail" id="pow-detail" hidden></div>
   </div>
 
   <div class="plate" id="raney">
@@ -212,8 +251,10 @@
     <span class="math"><b>S</b> − 1 = (<i>t</i><sub>2</sub> + <i>t</i><sub>3</sub> + <i>t</i><sub>4</sub> + ⋯) · <b>G</b></span>.
     Nothing about that division promises whole numbers, yet every entry of
     <span class="math"><b>G</b></span> is a non-negative integer. Wildberger and
-    Rubine named the array the Geode. Its first row and column are the Catalan and
-    Fuss–Catalan numbers; about everything past them, Wildberger writes that
+    Rubine named the array the Geode. Its first row and column are the
+    <a href="https://oeis.org/A000108">Catalan</a> and
+    <a href="https://oeis.org/A001764">Fuss–Catalan</a> numbers; about everything
+    past them, Wildberger writes that
     “the rest is an enigma.” The table below is computed live from the defining
     recurrence and checked against the closed form proved in 2025.</p>
     <div style="overflow-x:auto"><table class="geode-table" id="geode-table"></table></div>

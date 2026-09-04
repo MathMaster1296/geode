@@ -115,6 +115,17 @@ export function centralCount(m, r) {
   return (BigInt(r) * BigInt(mr) * hyperCatalan(m)) / BigInt(edgeCount(m) - 1);
 }
 
+// Coefficient of t^m in S^r (Theorem 7 of Rubine–Mukewar):
+//   C^(r)_m = r · (r − 2 + E_m)! / ( (r − 2 + V_m)! · m! )
+// Theorem 6 reads the same number combinatorially: it counts subdigons of
+// type m plus one extra (r+1)-gon whose central face is that (r+1)-gon.
+export function powerCoeff(r, m) {
+  let denom = 1n;
+  for (const c of Object.values(m)) denom *= factorial(c || 0);
+  return (BigInt(r) * factorial(r - 2 + edgeCount(m))) /
+    (factorial(r - 2 + vertexCount(m)) * denom);
+}
+
 // Bi-Tri slice of the Geode array G, defined by S − 1 = (t2 + t3 + …)·G,
 // i.e. C[m2,m3] = G[m2−1,m3] + G[m2,m3−1] for (m2,m3) ≠ (0,0). Solving for
 // the first summand: G[a][b] = C[a+1,b] − G[a+1][b−1], so column b needs

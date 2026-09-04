@@ -22,7 +22,17 @@ Things to try:
   the equation.
 - Load Wallis's cubic x³ − 2x − 5 = 0 in the playground and drag the
   polygon-size slider. Nine digits of the root appear before the polygons
-  reach ten vertices.
+  reach ten vertices, and the complex-plane panel shows the estimate walking
+  onto the circled root.
+- Load x⁵ − x − 1, a quintic with no formula in radicals. The series diverges
+  at first; press re-center once and it lands on the root anyway.
+- Cut the series at degree 7 in Plate III·b. Every coefficient cancels to an
+  exact zero in big-integer arithmetic, and the lone survivor is the next
+  Catalan number.
+- Open a term of S³ in Plate IV·b to see the subdigons with a central
+  quadrilateral that the coefficient counts.
+- Set up any equation you like, press copy link, and send it. The URL
+  reproduces your exact setup.
 
 The site is plain HTML, CSS, and ES modules, with no framework and no build
 step, so GitHub Pages serves the repo as-is.
@@ -57,7 +67,9 @@ The tests enumerate all dissections of small polygons and compare the totals to
 the super-Catalan numbers, check every type class against the closed
 hyper-Catalan formula, build the Geode table two independent ways, and run the
 series solver on equations with known roots, including Wallis's cubic and the
-cubic whose root is sin 10°.
+cubic whose root is sin 10°. They also check the powers formula against brute
+enumeration of central faces and expand the finite identity exactly, zero by
+zero.
 
 ## Layout
 
@@ -67,6 +79,8 @@ cubic whose root is sin 10°.
 | `js/solver.js` | polynomial to geometric form, series partial sums, Durand–Kerner reference roots |
 | `js/viz.js` | SVG rendering of subdigons |
 | `js/paneling.js` | the paneling-operator animation |
+| `js/identity.js` | the finite-identity checker |
+| `js/powers.js` | the powers-of-S explorer |
 | `js/app.js` | page wiring |
 | `extension/` | the "Subdigon of the Day" new-tab Chrome extension |
 | `build.mjs` | bundles everything into `dist/single.html` |
