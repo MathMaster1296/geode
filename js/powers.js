@@ -34,6 +34,7 @@ function renderPowers() {
       const C = powerCoeff(pw.r, m);
       const key = typeKey(m) || 'null';
       return `<span class="term" role="button" tabindex="0" data-key="${key}"
+        title="show the pictures this coefficient counts"
         aria-pressed="${key === pw.activeKey}">${C === 1n ? '' : C}${level === 0 ? '1' : termHTML(m)}</span>`;
     });
     html += rendered.length > 1 ? `(${rendered.join(' + ')})` : rendered.join('');
@@ -75,7 +76,7 @@ function renderPowDetail() {
     closed formula <span class="math">${r} · ${r - 2 + edgeCount(m)}! / (${r - 2 + vertexCount(m)}! · <b>m</b>!)</span>
     gives the same <span class="count-big">${C}</span>.</p>
     <div class="gallery">${kept.map(d =>
-      `<span class="cell">${renderSubdigon(d, n, { size: 88, highlightCentral: true })}</span>`).join('')}</div>`;
+      `<span class="cell">${renderSubdigon(d, n, { size: 88, highlightCentral: true, decorative: true })}</span>`).join('')}</div>`;
 }
 
 if (document.getElementById('pow-controls')) renderPowers();

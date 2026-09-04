@@ -12,6 +12,7 @@
 </head>
 <body>
 
+<a class="skip-link" href="#contents">skip to contents</a>
 <header class="hero">
   <button class="theme-toggle" id="theme-toggle" aria-label="switch color theme">theme: auto</button>
   <div class="prose">
@@ -21,13 +22,22 @@
     hiding inside counts of subdivided polygons. This page lets you play with the
     discovery, and with two papers that grew out of it.</p>
   </div>
-  <div class="hero-band" id="hero-band" aria-label="the eleven subdigons of the pentagon"></div>
+  <div class="hero-band" id="hero-band" role="img" aria-label="the eleven subdigons of the pentagon"></div>
   <p class="plate-note" style="text-align:center">The eleven subdigons of the pentagon. The series below knows them as
     <span class="math">5<i>t</i><sub>2</sub><sup>3</sup> + 5<i>t</i><sub>2</sub><i>t</i><sub>3</sub> + <i>t</i><sub>4</sub></span>.</p>
-  <div class="display-math hero-eq"><i>α</i> = 1 + <i>t</i><sub>2</sub><i>α</i><sup>2</sup> + <i>t</i><sub>3</sub><i>α</i><sup>3</sup> + <i>t</i><sub>4</sub><i>α</i><sup>4</sup> + ⋯</div>
+  <div class="display-math hero-eq" tabindex="0"><i>α</i> = 1 + <i>t</i><sub>2</sub><i>α</i><sup>2</sup> + <i>t</i><sub>3</sub><i>α</i><sup>3</sup> + <i>t</i><sub>4</sub><i>α</i><sup>4</sup> + ⋯</div>
   <div style="text-align:center"><a class="hero-cta" href="#playground">skip to the playground ↓</a></div>
 </header>
 
+<nav class="contents" id="contents" aria-label="contents">
+  <a href="#story">I · The oldest problem</a>
+  <a href="#series">II · The series</a>
+  <a href="#playground">III · The playground</a>
+  <a href="#papers-work">IV · From the papers</a>
+  <a href="#papers">V · The papers</a>
+</nav>
+
+<main id="main">
 <section id="story">
   <div class="prose">
     <p class="eyebrow">I · The oldest problem in algebra</p>
@@ -44,31 +54,31 @@
     with no nested roots anywhere.</p>
     <p>The pictures are called <strong>subdigons</strong>: a polygon, cut into smaller
     polygons by diagonals that never cross, with one edge marked as the roof
-    (drawn <span style="color:var(--accent)">blue</span> below). Fix how many triangles,
+    (drawn <span style="color:var(--link)">blue</span> below). Fix how many triangles,
     quadrilaterals, and pentagons you want, then ask how many different pictures
     exist. That count is a <strong>hyper-Catalan number</strong>, and it is the whole
     engine of the formula.</p>
   </div>
 
   <div class="plate" id="explorer">
-    <p class="plate-title">Plate I · Count the pictures</p>
+    <h3 class="plate-title">Plate I · Count the pictures</h3>
     <div class="face-key" id="face-key"></div>
     <div class="controls" id="explorer-controls"></div>
-    <p class="count-line" id="explorer-count"></p>
+    <p class="count-line" id="explorer-count" aria-live="polite"></p>
     <div class="gallery" id="explorer-gallery"></div>
     <p class="plate-note" id="explorer-note"></p>
   </div>
 
   <div class="prose">
     <p>Every one of those counts comes out of a single closed formula:</p>
-    <div class="display-math">
+    <div class="display-math" tabindex="0">
       <i>C</i><sub><b>m</b></sub> =
       <span class="frac">(2<i>m</i><sub>2</sub> + 3<i>m</i><sub>3</sub> + 4<i>m</i><sub>4</sub> + ⋯)<b>!</b></span>
       <big>/</big>
       <span class="frac">(1 + <i>m</i><sub>2</sub> + 2<i>m</i><sub>3</sub> + 3<i>m</i><sub>4</sub> + ⋯)<b>!</b> · <i>m</i><sub>2</sub><b>!</b> <i>m</i><sub>3</sub><b>!</b> <i>m</i><sub>4</sub><b>!</b> ⋯</span>
     </div>
     <p>Set everything except triangles to zero and it collapses to the Catalan
-    numbers <a href="https://oeis.org/A000108">1, 1, 2, 5, 14, 42</a>, the
+    numbers <a href="https://oeis.org/A000108" aria-label="the Catalan numbers on the OEIS">1, 1, 2, 5, 14, 42</a>, the
     classical sequence that counts triangulations of a polygon. The hyper-Catalan array is what the Catalan numbers look like
     when you allow every shape at once.</p>
   </div>
@@ -84,7 +94,7 @@
     exactly which pictures its coefficient is counting.</p>
   </div>
   <div class="plate">
-    <p class="plate-title">Plate II · The series, level by level</p>
+    <h3 class="plate-title">Plate II · The series, level by level</h3>
     <div class="series-line" id="series-line"></div>
     <div class="term-detail" id="term-detail" hidden></div>
   </div>
@@ -104,10 +114,10 @@
   </div>
 
   <div class="plate" id="paneling">
-    <p class="plate-title">Plate II·b · The paneling operator ∇̄</p>
+    <h3 class="plate-title">Plate II·b · The paneling operator ∇̄</h3>
     <div class="controls" id="pan-controls"></div>
     <div class="controls" id="pan-slots" aria-label="operator slots"></div>
-    <p class="count-line" id="pan-psi"></p>
+    <p class="count-line" id="pan-psi" aria-live="polite"></p>
     <div class="pan-stage" id="pan-stage"></div>
     <p class="plate-note">Click a slot to swap in a different subdigon, then glue.
     The operator’s central polygon keeps its color as it absorbs the pieces; the
@@ -132,7 +142,7 @@
     to sixteen decimal places.</p>
   </div>
   <div class="plate">
-    <p class="plate-title">Plate III · The root playground</p>
+    <h3 class="plate-title">Plate III · The root playground</h3>
     <div class="controls" id="presets"></div>
     <div class="poly-inputs" id="poly-inputs"></div>
     <p class="plate-note" id="t-readout"></p>
@@ -147,10 +157,10 @@
     </div>
     <div class="playground-grid">
       <div>
-        <div class="digits" id="digits-series"><span class="label">series estimate</span><span class="val"></span></div>
+        <div class="digits" id="digits-series" tabindex="0"><span class="label">series estimate</span><span class="val"></span></div>
         <div style="height:0.6rem"></div>
-        <div class="digits" id="digits-root"><span class="label">true root (Durand–Kerner)</span><span class="val"></span></div>
-        <p class="digit-status" id="digit-status"></p>
+        <div class="digits" id="digits-root" tabindex="0"><span class="label">true root (Durand–Kerner)</span><span class="val"></span></div>
+        <p class="digit-status" id="digit-status" aria-live="polite"></p>
       </div>
       <div>
         <div class="chart-wrap" id="err-chart"></div>
@@ -174,11 +184,11 @@
     hyper-Catalan number, waiting to be read off.</p>
   </div>
   <div class="plate" id="identity">
-    <p class="plate-title">Plate III·b · The finite identity</p>
+    <h3 class="plate-title">Plate III·b · The finite identity</h3>
     <div class="controls" id="fid-controls"></div>
-    <p class="series-line" id="fid-series" style="font-size:1.05rem"></p>
-    <p class="series-line" id="fid-residual" style="font-size:1.05rem"></p>
-    <p class="plate-note" id="fid-note"></p>
+    <p class="series-line" id="fid-series" style="font-size:1.05rem" tabindex="0"></p>
+    <p class="series-line" id="fid-residual" style="font-size:1.05rem" tabindex="0"></p>
+    <p class="plate-note" id="fid-note" aria-live="polite"></p>
   </div>
 </section>
 
@@ -186,7 +196,7 @@
   <div class="prose">
     <p class="eyebrow">IV · From the papers</p>
     <h2>What a finite piece of infinity means</h2>
-    <p>The series is an infinite object, and infinite objects invite a sharp
+    <p>The series is an infinite object, and infinite objects invite an obvious
     question: what exactly is being claimed at any finite stage? The two papers
     this site accompanies answer it. The first
     (<a href="https://arxiv.org/abs/2507.20003">Mukewar, 2025</a>) proves the
@@ -198,7 +208,7 @@
   </div>
 
   <div class="plate" id="central">
-    <p class="plate-title">Plate IV · Who sits against the roof</p>
+    <h3 class="plate-title">Plate IV · Who sits against the roof</h3>
     <p style="margin-top:0">Of the <span class="math"><i>C</i><sub><b>m</b></sub></span> subdigons of a
     given type, how many have a triangle as the central face, the one touching the
     roof? The Involve paper’s Theorem 5 gives an exact fraction:
@@ -217,14 +227,14 @@
     against a live enumeration when you click it.</p>
   </div>
   <div class="plate" id="powers">
-    <p class="plate-title">Plate IV·b · Powers of the series</p>
+    <h3 class="plate-title">Plate IV·b · Powers of the series</h3>
     <div class="controls" id="pow-controls"></div>
     <div class="series-line" id="pow-line"></div>
     <div class="term-detail" id="pow-detail" hidden></div>
   </div>
 
   <div class="plate" id="raney">
-    <p class="plate-title">Plate V · The necklace trick</p>
+    <h3 class="plate-title">Plate V · The necklace trick</h3>
     <p style="margin-top:0">The tidy fractions above exist because of a 1960 lemma
     of George Raney, with roots in a 1947 counting trick. Write a cyclic word of
     up-steps and down-steps whose total is +1. Then exactly one starting point
@@ -237,7 +247,7 @@
         <div class="raney-word" id="raney-word"></div>
         <div class="controls" style="margin-top:0.8rem">
           <button class="action" id="raney-rotate">rotate ⟳</button>
-          <span class="badge" id="raney-badge"></span>
+          <span class="badge" id="raney-badge" aria-live="polite"></span>
         </div>
       </div>
       <div class="chart-wrap" style="flex:1;min-width:240px" id="raney-chart"></div>
@@ -245,7 +255,7 @@
   </div>
 
   <div class="plate" id="geode">
-    <p class="plate-title">Plate VI · The Geode</p>
+    <h3 class="plate-title">Plate VI · The Geode</h3>
     <p style="margin-top:0">One more thing fell out of the Monthly paper. Group the
     series by faces and a factorization appears:
     <span class="math"><b>S</b> − 1 = (<i>t</i><sub>2</sub> + <i>t</i><sub>3</sub> + <i>t</i><sub>4</sub> + ⋯) · <b>G</b></span>.
@@ -257,7 +267,7 @@
     past them, Wildberger writes that
     “the rest is an enigma.” The table below is computed live from the defining
     recurrence and checked against the closed form proved in 2025.</p>
-    <div style="overflow-x:auto"><table class="geode-table" id="geode-table"></table></div>
+    <div style="overflow-x:auto" tabindex="0" role="region" aria-label="the Geode table"><table class="geode-table" id="geode-table"></table></div>
   </div>
 </section>
 
@@ -296,6 +306,8 @@
     and Wildberger’s <a href="https://njwildberger.com/tag/geode/">blog posts on the Geode</a>.</p>
   </div>
 </section>
+
+</main>
 
 <footer>
   <p class="math"><i>α</i> = 1 + <i>t</i><sub>2</sub> + (2<i>t</i><sub>2</sub><sup>2</sup> + <i>t</i><sub>3</sub>) + (5<i>t</i><sub>2</sub><sup>3</sup> + 5<i>t</i><sub>2</sub><i>t</i><sub>3</sub> + <i>t</i><sub>4</sub>) + ⋯</p>

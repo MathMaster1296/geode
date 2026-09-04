@@ -49,7 +49,7 @@ function ofType(m) {
 {
   const band = $('hero-band');
   const subs = dissections(5).slice().sort((a, b) => b.length - a.length);
-  band.innerHTML = subs.map(d => renderSubdigon(d, 5, { size: 84 })).join('');
+  band.innerHTML = subs.map(d => renderSubdigon(d, 5, { size: 84, decorative: true })).join('');
 }
 
 /* ---------- face key ---------- */
@@ -117,7 +117,7 @@ function renderExplorer() {
        <span class="count-big">${C}</span> subdigon${C === 1n ? '' : 's'} of a ${n}-gon`;
   const shown = subs.slice(0, 144);
   $('explorer-gallery').innerHTML = shown.map(d =>
-    `<span class="cell">${renderSubdigon(d, n, { size: 104 })}</span>`).join('');
+    `<span class="cell">${renderSubdigon(d, n, { size: 104, decorative: true })}</span>`).join('');
   if (subs.length > shown.length) {
     flashNote(`showing 144 of ${subs.length}.`);
   } else renderExplorerNote();
@@ -143,6 +143,7 @@ function renderSeries() {
       const key = typeKey(m) || 'null';
       const pressed = key === activeTermKey;
       return `<span class="term" role="button" tabindex="0" data-key="${key}"
+        title="show the pictures this coefficient counts"
         aria-pressed="${pressed}">${C === 1n ? '' : C}${level === 0 ? '1' : termHTML(m)}</span>`;
     }).join(' + ');
     html += terms.length > 1 ? `(${rendered})` : rendered;
@@ -176,7 +177,7 @@ function renderTermDetail() {
     <span class="count-big">${hyperCatalan(m)}</span> counts these:
     <span class="math">${describeType(m)}</span> on a ${n}-gon.</p>
     <div class="gallery">${subs.map(d =>
-      `<span class="cell">${renderSubdigon(d, n, { size: 88 })}</span>`).join('')}</div>`;
+      `<span class="cell">${renderSubdigon(d, n, { size: 88, decorative: true })}</span>`).join('')}</div>`;
 }
 renderSeries();
 
@@ -334,7 +335,9 @@ function drawRootsPlane(roots, target, trail) {
     ${trailPts.length > 1 ? `<polyline class="est-trail" points="${trailPts.join(' ')}"/>` : ''}
     ${Number.isFinite(last) ? `<g class="est-marker" transform="translate(${X(last).toFixed(1)},${cy})">
       <line x1="-5" y1="-5" x2="5" y2="5"/><line x1="-5" y1="5" x2="5" y2="-5"/></g>` : ''}
-  </svg>`;
+  </svg>
+  <p class="sr-only">The equation has ${roots.length} roots. The series is heading for the root
+    ${+target.re.toPrecision(6)}${Math.abs(target.im) > 1e-8 ? ` ${target.im > 0 ? '+' : '−'} ${+Math.abs(target.im).toPrecision(6)}i` : ''}${Number.isFinite(last) ? `, and its current estimate is ${+last.toPrecision(6)}` : ''}.</p>`;
 }
 
 function updateHash() {
@@ -342,7 +345,7 @@ function updateHash() {
   history.replaceState(null, '', `#q=${play.coeffs.map(f).join('_')}&a=${f(play.center)}&n=${play.maxV}`);
 }
 function drawErrChart(points) {
-  const W = 460, H = 258, L = 46, R = 14, T = 12, B = 42;
+  const W = 340, H = 232, L = 44, R = 12, T = 12, B = 42;
   const Vs = points.map(p => p.V);
   const logs = points.map(p => Math.log10(p.err));
   const yMax = Math.min(Math.ceil(Math.max(...logs, 0)) + 1, 2);
@@ -367,6 +370,8 @@ function drawErrChart(points) {
     ${labels}
     <text class="axis-label" x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">max polygon vertices</text>
     <path class="err-line" d="${path}"/>${dots}</svg>
+    <p class="sr-only">The error starts at ${points[0].err.toExponential(1)} and reaches
+      ${points[points.length - 1].err.toExponential(1)} once polygons with ${Vs[Vs.length - 1]} vertices are included.</p>
     <div class="chart-tip" role="status"></div>`;
   const tip = $('err-chart').querySelector('.chart-tip');
   $('err-chart').querySelectorAll('.err-dot').forEach(dot => {
@@ -463,10 +468,10 @@ function renderCentral() {
     const r = size - 1;
     const predicted = centralCount(m, r);
     html += `<div class="central-group">
-      <h3>central ${FACE_LABELS[r]} · ${list.length} of ${total}</h3>
+      <h4>central ${FACE_LABELS[r]} · ${list.length} of ${total}</h4>
       <p class="formula-check">theorem: ${r} · ${m[r]} · ${total} / ${E1} = ${predicted} ✓</p>
       <div class="gallery">${list.map(d =>
-        `<span class="cell">${renderSubdigon(d, n, { size: 96, highlightCentral: true })}</span>`).join('')}</div>
+        `<span class="cell">${renderSubdigon(d, n, { size: 96, highlightCentral: true, decorative: true })}</span>`).join('')}</div>
     </div>`;
   }
   $('central-groups').innerHTML = html;
@@ -512,7 +517,7 @@ function renderRaney() {
   const isValid = valid.includes(raney.offset % L);
   $('raney-badge').className = 'badge ' + (total > 0 ? (isValid ? 'ok' : 'bad') : 'bad');
   $('raney-badge').textContent = total > 0
-    ? `sum = +${total}, so ${valid.length} of ${L} starts stay positive · this one: ${isValid ? 'yes' : 'no'}`
+    ? `sum = +${total}, so ${valid.length} of ${L} starts ${valid.length === 1 ? 'stays' : 'stay'} positive · this one: ${isValid ? 'yes' : 'no'}`
     : `sum = ${total}, so no start can stay positive`;
 
   // staircase of the current rotation

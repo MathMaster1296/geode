@@ -13,10 +13,13 @@ export function vertexPositions(n, r = 44, cx = 50, cy = 50) {
 
 // faces: list of vertex-index lists (a dissection from subdigons.js).
 // Returns an <svg> string. Colors come from CSS classes face-3 .. face-8.
-export function renderSubdigon(faces, n, { size = 120, showVertices = true, rootEdge = true, highlightCentral = false } = {}) {
+export function renderSubdigon(faces, n, { size = 120, showVertices = true, rootEdge = true, highlightCentral = false, decorative = false } = {}) {
   const pts = vertexPositions(n);
   const p = i => `${pts[i][0].toFixed(2)},${pts[i][1].toFixed(2)}`;
-  let s = `<svg viewBox="0 0 100 100" width="${size}" height="${size}" class="subdigon" role="img" aria-label="subdigon with ${faces.length} faces">`;
+  // in a gallery the surrounding count already says what the pictures are, so
+  // individual images stay out of the screen-reader stream
+  const a11y = decorative ? 'aria-hidden="true"' : `role="img" aria-label="subdigon with ${faces.length} faces"`;
+  let s = `<svg viewBox="0 0 100 100" width="${size}" height="${size}" class="subdigon" ${a11y}>`;
 
   const faceList = faces.length ? faces : [[...Array(n).keys()]];
   for (const face of faceList) {
