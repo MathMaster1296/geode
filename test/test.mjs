@@ -192,5 +192,35 @@ for (const [r, m] of [[2, { 2: 2 }], [2, { 3: 1 }], [3, { 2: 1 }], [3, { 2: 2 }]
     `residual ${evalPoly(c, x)} at x=${x}`);
 }
 
+// --- words: every subdigon's word has rank −1 and exactly one parsing rotation
+{
+  const { dualTree, wordOf, rank, parseWords, validRotations } = await import('../js/words.js');
+  let total = 0, badRank = 0, badParse = 0, badRot = 0;
+  for (let n = 2; n <= 6; n++) {
+    for (const d of enumerateDissections(n)) {
+      const w = wordOf(dualTree(d, n));
+      total++;
+      if (rank(w) !== -1) badRank++;
+      const p = parseWords(w);
+      if (!p.ok || p.count !== 1) badParse++;
+      if (validRotations(w, 1).length !== 1) badRot++;
+    }
+  }
+  check(`${total} subdigon words all have rank −1`, badRank === 0, `${badRank} bad`);
+  check('every subdigon word parses as one word', badParse === 0, `${badParse} bad`);
+  check('Theorem 4 with n=1: exactly one rotation parses', badRot === 0, `${badRot} bad`);
+  check('triangle word is 2 0 0', wordOf(dualTree([[0, 1, 2]], 3)).join(' ') === '2 0 0');
+  check('null subdigon word is 0', wordOf(dualTree([], 2)).join(' ') === '0');
+  // concatenating r words gives rank −r and exactly r parsing rotations
+  const pent = enumerateDissections(5);
+  const quad = enumerateDissections(4);
+  const w1 = wordOf(dualTree(pent[4], 5)), w2 = wordOf(dualTree(quad[1], 4)), w3 = wordOf(dualTree(pent[9], 5));
+  const two = [...w1, ...w2], three = [...w1, ...w2, ...w3];
+  check('two words: rank −2, two rotations parse', rank(two) === -2 && validRotations(two, 2).length === 2,
+    `rank ${rank(two)}, ${validRotations(two, 2).length} rotations`);
+  check('three words: rank −3, three rotations parse', rank(three) === -3 && validRotations(three, 3).length === 3,
+    `rank ${rank(three)}, ${validRotations(three, 3).length} rotations`);
+}
+
 console.log(failures ? `\n${failures} FAILURES` : '\nall tests passed');
 process.exit(failures ? 1 : 0);

@@ -96,6 +96,7 @@
   <div class="plate">
     <h3 class="plate-title">Plate II · The series, level by level</h3>
     <div class="series-line" id="series-line"></div>
+    <p class="plate-note" id="series-totals"></p>
     <div class="term-detail" id="term-detail" hidden></div>
   </div>
   <div class="prose">
@@ -154,6 +155,7 @@
       <button class="action" id="recenter">re-center at current estimate</button>
       <button class="action" id="reset-center">reset</button>
       <button class="action" id="copy-link">copy link</button>
+      <button class="action" id="two-pass">replay the paper’s two passes</button>
     </div>
     <div class="playground-grid">
       <div>
@@ -175,6 +177,28 @@
   </div>
 
   <div class="prose">
+    <p>Why did Wallis’s cubic need re-centering? The series only converges when
+    the <span class="math"><i>t</i></span> values are small, and for cubics the
+    exact region is known. It is the shape below, with corners at
+    <span class="math"><i>t</i><sub>2</sub> = ±¼</span>, the radius of the Catalan
+    series, and <span class="math"><i>t</i><sub>3</sub> = ±4⁄27</span>, the radius
+    of the Fuss–Catalan series. Every coefficient of
+    <span class="math"><b>S</b></span> is positive, so only the sizes of the
+    <span class="math"><i>t</i></span> values matter, and the region is symmetric.
+    The dot is wherever the playground currently sits. Wallis’s cubic starts at
+    <span class="math"><i>t</i><sub>3</sub> = 3.1</span>, nowhere near the picture,
+    and a single re-centering drops it at
+    <span class="math">(−0.06, −0.001)</span>, deep inside.</p>
+  </div>
+  <div class="plate" id="region">
+    <h3 class="plate-title">Plate III·b · Where the series converges</h3>
+    <div class="region-row">
+      <div class="chart-wrap" id="region-plot"></div>
+      <p class="plate-note" id="region-note" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="prose">
     <p>There is a sharper way to say what just happened, and it is the claim both
     finite-interpretation papers share. Convergence is a statement about limits,
     but the identity is exact long before any limit: cut
@@ -184,7 +208,7 @@
     hyper-Catalan number, waiting to be read off.</p>
   </div>
   <div class="plate" id="identity">
-    <h3 class="plate-title">Plate III·b · The finite identity</h3>
+    <h3 class="plate-title">Plate III·c · The finite identity</h3>
     <div class="controls" id="fid-controls"></div>
     <p class="series-line" id="fid-series" style="font-size:1.05rem" tabindex="0"></p>
     <p class="series-line" id="fid-residual" style="font-size:1.05rem" tabindex="0"></p>
@@ -233,25 +257,30 @@
     <div class="term-detail" id="pow-detail" hidden></div>
   </div>
 
-  <div class="plate" id="raney">
-    <h3 class="plate-title">Plate V · The necklace trick</h3>
-    <p style="margin-top:0">The tidy fractions above exist because of a 1960 lemma
-    of George Raney, with roots in a 1947 counting trick. Write a cyclic word of
-    up-steps and down-steps whose total is +1. Then exactly one starting point
-    keeps the running sum positive all the way around; if the total is
-    <i>r</i>, exactly <i>r</i> starting points do. The Involve paper gives a short
-    new proof by parsing the circle directly. Click steps to flip them, rotate,
-    and watch which starting points survive.</p>
-    <div class="raney-row">
-      <div>
-        <div class="raney-word" id="raney-word"></div>
-        <div class="controls" style="margin-top:0.8rem">
-          <button class="action" id="raney-rotate">rotate ⟳</button>
-          <span class="badge" id="raney-badge" aria-live="polite"></span>
-        </div>
-      </div>
-      <div class="chart-wrap" style="flex:1;min-width:240px" id="raney-chart"></div>
+  <div class="plate" id="words">
+    <h3 class="plate-title">Plate V · From picture to word</h3>
+    <p style="margin-top:0">The tidy fractions above exist because every subdigon
+    is secretly a tree, and every tree is secretly a word. Put a node in each
+    face, join the faces that share a diagonal, and root the tree at the central
+    face. Now read it from the root: each face says how many free sides it has,
+    then hands off to whatever sits on those sides, and an outer edge just says 0.
+    The result is a string whose rank (add up every letter minus one) is exactly
+    −1. Raney’s lemma from 1960, Theorem 4 in the Involve paper, says a string of
+    rank −<i>n</i> has exactly <i>n</i> rotations that parse back into
+    <i>n</i> words, and the paper’s short proof is the parsing rule itself. Fill
+    the slots, rotate the combined word, and count.</p>
+    <div class="controls" id="wv-controls"></div>
+    <div class="word-slots" id="wv-slots"></div>
+    <div class="word-line" id="wv-word" aria-label="the combined word, current rotation"></div>
+    <div class="controls" style="margin-top:0.8rem">
+      <button class="action" id="wv-rotate">rotate ⟳</button>
+      <span class="badge" id="wv-badge" aria-live="polite"></span>
     </div>
+    <p class="plate-note">Reading from the right, a letter <i>k</i> followed by
+    <i>k</i> finished words becomes one finished word. The bars count the finished
+    words in hand after each letter, and a rotation parses when the whole string
+    reduces to exactly the right number of them. Hover a letter to light up its
+    node.</p>
   </div>
 
   <div class="plate" id="geode">

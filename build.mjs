@@ -8,7 +8,7 @@ const stripModules = f => readFileSync(f, 'utf8')
   .replace(/^export /gm, '');
 
 const css = readFileSync('css/style.css', 'utf8');
-const js = ['js/subdigons.js', 'js/solver.js', 'js/viz.js', 'js/paneling.js', 'js/identity.js', 'js/powers.js', 'js/app.js'].map(stripModules).join('\n');
+const js = ['js/subdigons.js', 'js/solver.js', 'js/viz.js', 'js/paneling.js', 'js/identity.js', 'js/powers.js', 'js/words.js', 'js/app.js'].map(stripModules).join('\n');
 const html = readFileSync('index.html', 'utf8');
 
 mkdirSync('dist', { recursive: true });

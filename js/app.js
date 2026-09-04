@@ -7,6 +7,7 @@ import { renderSubdigon, describeType, termHTML } from './viz.js';
 import './paneling.js';
 import './identity.js';
 import './powers.js';
+import './words.js';
 
 const $ = id => document.getElementById(id);
 const FACE_LABELS = { 2: 'triangle', 3: 'quadrilateral', 4: 'pentagon', 5: 'hexagon' };
@@ -60,11 +61,11 @@ function ofType(m) {
 }
 
 /* ---------- Plate I: explorer ---------- */
-const explorerState = { 2: 2, 3: 1, 4: 0 };
+const explorerState = { 2: 2, 3: 1, 4: 0, 5: 0 };
 function renderExplorerControls() {
   const wrap = $('explorer-controls');
   wrap.innerHTML = '';
-  for (const k of [2, 3, 4]) {
+  for (const k of [2, 3, 4, 5]) {
     const div = document.createElement('div');
     div.className = 'control';
     div.innerHTML = `<label>${FACE_LABELS[k]}s</label>
@@ -136,8 +137,10 @@ function seriesTerms(level) {
 function renderSeries() {
   const line = $('series-line');
   let html = '<b>S</b> = ';
+  const totals = [];
   for (let level = 0; level <= 5; level++) {
     const terms = seriesTerms(level);
+    totals.push(terms.reduce((a, m) => a + hyperCatalan(m), 0n));
     const rendered = terms.map(m => {
       const C = hyperCatalan(m);
       const key = typeKey(m) || 'null';
@@ -150,6 +153,11 @@ function renderSeries() {
     html += level < 5 ? ' + ' : ' + ⋯';
   }
   line.innerHTML = html;
+  if ($('series-totals')) {
+    $('series-totals').innerHTML = `The coefficients in each bracket add up to ${totals.join(', ')}:
+      the little Schröder numbers (<a href="https://oeis.org/A001003">A001003</a>), which count
+      every subdigon of the polygon at that level, whatever the mix of shapes.`;
+  }
   line.querySelectorAll('.term').forEach(el => {
     const activate = () => {
       activeTermKey = activeTermKey === el.dataset.key ? null : el.dataset.key;
@@ -285,7 +293,69 @@ function runPlayground() {
     return { V, err: Math.max(Math.hypot(x - root.re, root.im), 1e-17) };
   }));
   drawRootsPlane(roots, root, entries.map(([, s]) => play.center + scale * s));
+  drawRegion(ts);
   updateHash();
+}
+
+// The exact region of convergence for cubics, in the (t2, t3) plane. The
+// boundary is where the equation s = 1 + t2 s² + t3 s³ and its s-derivative
+// vanish together, parametrized by s in [3/2, 2]: t2 = (2s − 3)/s²,
+// t3 = (2 − s)/s³. Every coefficient of S is positive, so only |t2| and |t3|
+// matter and the region is symmetric across both axes.
+function regionArc() {
+  const arc = [];
+  for (let i = 0; i <= 48; i++) {
+    const s = 1.5 + (0.5 * i) / 48;
+    arc.push([(2 * s - 3) / (s * s), (2 - s) / (s * s * s)]);
+  }
+  return arc;
+}
+function regionContains(t2, t3) {
+  const a = Math.abs(t2), b = Math.abs(t3);
+  if (a > 0.25 || b > 4 / 27) return false;
+  const arc = regionArc();
+  for (let i = 1; i < arc.length; i++) {
+    if (a <= arc[i][0]) {
+      const f = (a - arc[i - 1][0]) / (arc[i][0] - arc[i - 1][0] || 1);
+      return b <= arc[i - 1][1] + f * (arc[i][1] - arc[i - 1][1]) + 1e-12;
+    }
+  }
+  return b <= 1e-12;
+}
+function drawRegion(ts) {
+  const wrap = $('region-plot');
+  if (!wrap) return;
+  const W = 340, H = 270, cx = W / 2, cy = H / 2;
+  const sx = (W / 2 - 24) / 0.32, sy = (H / 2 - 24) / 0.2;
+  const X = t => cx + t * sx, Y = t => cy - t * sy;
+  const q1 = regionArc();
+  const loop = [
+    ...q1,
+    ...q1.slice().reverse().map(([a, b]) => [a, -b]),
+    ...q1.map(([a, b]) => [-a, -b]),
+    ...q1.slice().reverse().map(([a, b]) => [-a, b]),
+  ];
+  const path = loop.map(([a, b], i) => `${i ? 'L' : 'M'}${X(a).toFixed(1)},${Y(b).toFixed(1)}`).join('') + 'Z';
+  const t2 = ts[2] || 0, t3 = ts[3] || 0;
+  const inside = regionContains(t2, t3);
+  const px = Math.max(-0.31, Math.min(0.31, t2)), py = Math.max(-0.19, Math.min(0.19, t3));
+  const clipped = px !== t2 || py !== t3;
+  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="the convergence region for cubics in the t2, t3 plane">
+    <line class="baseline" x1="12" y1="${cy}" x2="${W - 12}" y2="${cy}"/>
+    <line class="baseline" x1="${cx}" y1="12" x2="${cx}" y2="${H - 12}"/>
+    <path class="region-fill" d="${path}"/>
+    <text class="axis-label" x="${X(0.25) + 4}" y="${cy + 14}">¼</text>
+    <text class="axis-label" x="${X(-0.25) - 16}" y="${cy + 14}">−¼</text>
+    <text class="axis-label" x="${cx + 6}" y="${Y(4 / 27) - 4}">4⁄27</text>
+    <text class="axis-label" x="${cx + 6}" y="${Y(-4 / 27) + 12}">−4⁄27</text>
+    <text class="axis-label" x="${W - 12}" y="${cy - 6}" text-anchor="end"><tspan font-style="italic">t</tspan>₂</text>
+    <text class="axis-label" x="${cx + 6}" y="16"><tspan font-style="italic">t</tspan>₃</text>
+    <circle class="region-dot${inside ? '' : ' out'}" r="6" cx="${X(px).toFixed(1)}" cy="${Y(py).toFixed(1)}"/>
+  </svg>`;
+  const higher = (ts[4] || ts[5]) ? ' The degree-4 and degree-5 terms of this equation are not part of the picture.' : '';
+  $('region-note').innerHTML = `Right now the playground sits at
+    <span class="math"><i>t</i><sub>2</sub> = ${fmtT(t2)}, <i>t</i><sub>3</sub> = ${fmtT(t3)}</span>,
+    ${inside ? 'inside the region, so the series converges.' : `outside the region${clipped ? ' (the dot is pinned to the edge of the chart)' : ''}, so the series diverges until you re-center.`}${higher}`;
 }
 function showPlayError(msg) {
   $('t-readout').innerHTML = `<span class="badge bad">${msg}</span>`;
@@ -294,6 +364,7 @@ function showPlayError(msg) {
   $('digit-status').textContent = '';
   $('err-chart').innerHTML = '';
   if ($('roots-plane')) $('roots-plane').innerHTML = '';
+  if ($('region-plot')) { $('region-plot').innerHTML = ''; $('region-note').textContent = ''; }
 }
 
 // Every root of p in the complex plane, the targeted root ringed, and the
@@ -387,11 +458,11 @@ function drawErrChart(points) {
   });
 }
 $('level-slider').addEventListener('input', e => { play.maxV = +e.target.value; runPlayground(); });
-$('recenter').addEventListener('click', () => {
+function recenterOnce() {
   const shifted = shiftPoly(play.coeffs, play.center);
   if (!shifted[1]) {
     play.center = newtonStep(play.coeffs, play.center + 1e-3);
-    return runPlayground();
+    return;
   }
   try {
     const { ts, scale } = toGeometricForm(shifted);
@@ -403,11 +474,25 @@ $('recenter').addEventListener('click', () => {
     } else {
       play.center = play.center + scale * S;
     }
-    runPlayground();
   } catch {
     play.center = newtonStep(play.coeffs, play.center);
-    runPlayground();
   }
+}
+$('recenter').addEventListener('click', () => { recenterOnce(); runPlayground(); });
+$('two-pass').addEventListener('click', () => {
+  // the paper's demonstration: start Wallis's cubic at 2, run the series, re-center, run again
+  const p = PRESETS.find(x => x.id === 'wallis');
+  play.coeffs = [...p.coeffs];
+  play.center = p.center;
+  play.baseCenter = p.center;
+  play.preset = p.id;
+  renderPolyInputs();
+  renderPresets();
+  runPlayground();
+  recenterOnce();
+  runPlayground();
+  recenterOnce();
+  runPlayground();
 });
 $('reset-center').addEventListener('click', () => { play.center = play.baseCenter; runPlayground(); });
 $('copy-link').addEventListener('click', () => {
@@ -477,66 +562,6 @@ function renderCentral() {
   $('central-groups').innerHTML = html;
 }
 renderCentral();
-
-/* ---------- Plate V: Raney's necklace ---------- */
-const raney = { word: [1, 1, -1, 1, -1, -1, 1], offset: 0 };
-function raneyRotation(offset) {
-  const L = raney.word.length;
-  return Array.from({ length: L }, (_, i) => raney.word[(offset + i) % L]);
-}
-function raneyValidStarts() {
-  const L = raney.word.length;
-  const valid = [];
-  for (let s = 0; s < L; s++) {
-    let sum = 0, ok = true;
-    for (const step of raneyRotation(s)) {
-      sum += step;
-      if (sum <= 0) { ok = false; break; }
-    }
-    if (ok) valid.push(s);
-  }
-  return valid;
-}
-function renderRaney() {
-  const L = raney.word.length;
-  const valid = raneyValidStarts();
-  const total = raney.word.reduce((a, b) => a + b, 0);
-  const rot = raneyRotation(raney.offset);
-  $('raney-word').innerHTML = rot.map((v, i) =>
-    `<span class="${v > 0 ? 'pos' : 'neg'}" role="button" tabindex="0" data-i="${i}"
-      aria-label="flip step ${i + 1}">${v > 0 ? '▲' : '▽'}</span>`).join('');
-  $('raney-word').querySelectorAll('span').forEach(el => {
-    const flip = () => {
-      const i = (raney.offset + +el.dataset.i) % L;
-      raney.word[i] = -raney.word[i];
-      renderRaney();
-    };
-    el.addEventListener('click', flip);
-    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } });
-  });
-  const isValid = valid.includes(raney.offset % L);
-  $('raney-badge').className = 'badge ' + (total > 0 ? (isValid ? 'ok' : 'bad') : 'bad');
-  $('raney-badge').textContent = total > 0
-    ? `sum = +${total}, so ${valid.length} of ${L} starts ${valid.length === 1 ? 'stays' : 'stay'} positive · this one: ${isValid ? 'yes' : 'no'}`
-    : `sum = ${total}, so no start can stay positive`;
-
-  // staircase of the current rotation
-  const W = 300, H = 150, pad = 16;
-  const xs = i => pad + (i / L) * (W - 2 * pad);
-  const sums = [0];
-  for (const v of rot) sums.push(sums[sums.length - 1] + v);
-  const maxS = Math.max(...sums, 1), minS = Math.min(...sums, 0);
-  const ys = s => H - pad - ((s - minS) / (maxS - minS)) * (H - 2 * pad);
-  let path = `M${xs(0)},${ys(0)}`;
-  for (let i = 1; i <= L; i++) path += `L${xs(i)},${ys(sums[i])}`;
-  $('raney-chart').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="running sum of the current rotation">
-    <line class="grid" x1="${pad}" y1="${ys(0)}" x2="${W - pad}" y2="${ys(0)}"/>
-    <path class="err-line" style="stroke:${isValid ? 'var(--good)' : 'var(--f4)'}" d="${path}"/>
-    ${sums.map((s, i) => `<circle class="err-dot" style="fill:${s <= 0 && i > 0 ? 'var(--f4)' : 'var(--good)'}" r="3.4" cx="${xs(i)}" cy="${ys(s)}"/>`).join('')}
-  </svg>`;
-}
-$('raney-rotate').addEventListener('click', () => { raney.offset = (raney.offset + 1) % raney.word.length; renderRaney(); });
-renderRaney();
 
 /* ---------- Plate VI: the Geode ---------- */
 {

@@ -42,13 +42,18 @@ function el(id) { return document.getElementById(id); }
 function renderControls() {
   el('pan-controls').innerHTML = [2, 3, 4].map(k =>
     `<button class="preset" data-k="${k}" aria-pressed="${k === pan.k}">∇̄<sub>${k}</sub> · ${k} slots, central ${k + 1}-gon</button>`
-  ).join('') + `<button class="action" id="pan-replay">glue ⟳</button>`;
+  ).join('') + `<button class="action" id="pan-replay">glue ⟳</button>
+    <button class="action" id="pan-surprise">surprise me</button>`;
   el('pan-controls').querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => {
     pan.k = +b.dataset.k;
     while (pan.slots.length < pan.k) pan.slots.push((pan.slots.length * 2 + 1) % SLOT_OPTIONS.length);
     render();
   }));
   el('pan-replay').addEventListener('click', () => animate());
+  el('pan-surprise').addEventListener('click', () => {
+    pan.slots = pan.slots.map(() => Math.floor(Math.random() * SLOT_OPTIONS.length));
+    render();
+  });
 }
 
 function renderSlots() {

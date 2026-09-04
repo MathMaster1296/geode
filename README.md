@@ -26,9 +26,16 @@ Things to try:
   onto the circled root.
 - Load x⁵ − x − 1, a quintic with no formula in radicals. The series diverges
   at first; press re-center once and it lands on the root anyway.
-- Cut the series at degree 7 in Plate III·b. Every coefficient cancels to an
+- Press "replay the paper's two passes" and watch Wallis's cubic go from a
+  diverging series to sixteen matching digits, exactly as the Monthly paper
+  reports. Plate III·b shows why the first pass needed re-centering: the dot
+  starts far outside the convergence region and lands deep inside it.
+- Cut the series at degree 7 in Plate III·c. Every coefficient cancels to an
   exact zero in big-integer arithmetic, and the lone survivor is the next
   Catalan number.
+- Fill the slots in Plate V with subdigons, then rotate the combined word.
+  With three subdigons the rank is −3 and exactly three rotations parse, which
+  is Raney's lemma doing its job in front of you.
 - Open a term of S³ in Plate IV·b to see the subdigons with a central
   quadrilateral that the coefficient counts.
 - Set up any equation you like, press copy link, and send it. The URL
@@ -81,6 +88,7 @@ zero.
 | `js/paneling.js` | the paneling-operator animation |
 | `js/identity.js` | the finite-identity checker |
 | `js/powers.js` | the powers-of-S explorer |
+| `js/words.js` | dual trees, Łukasiewicz words, and the Raney parsing rule |
 | `js/app.js` | page wiring |
 | `extension/` | the "Subdigon of the Day" new-tab Chrome extension |
 | `build.mjs` | bundles everything into `dist/single.html` |
