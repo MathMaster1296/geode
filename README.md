@@ -1,6 +1,6 @@
 # Geode
 
-Live at [mathmaster1296.github.io/geode](https://mathmaster1296.github.io/geode/).
+Live at [prathammukewar.github.io/geode](https://prathammukewar.github.io/geode/).
 
 In 2025, Wildberger and Rubine published a power series that solves every
 polynomial equation, with coefficients that count subdivided polygons rather

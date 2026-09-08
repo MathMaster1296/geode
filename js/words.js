@@ -107,8 +107,8 @@ function slotWord(i) {
 
 function renderWords() {
   wvEl('wv-controls').innerHTML = [1, 2, 3].map(r =>
-    `<button class="preset" data-r="${r}" aria-pressed="${r === wv.r}">${r} word${r > 1 ? 's' : ''} · rank −${r}</button>`
-  ).join('') + `<button class="action" id="wv-surprise">surprise me</button>`;
+    `<button class="preset" data-r="${r}" aria-pressed="${r === wv.r}" data-tip="Chain ${r} subdigon word${r > 1 ? 's' : ''} together. The rank is −${r}, so exactly ${r} rotation${r > 1 ? 's' : ''} should parse.">${r} word${r > 1 ? 's' : ''} · rank −${r}</button>`
+  ).join('') + `<button class="action" id="wv-surprise" data-tip="Fill every slot at random.">surprise me</button>`;
   wvEl('wv-controls').querySelectorAll('[data-r]').forEach(b =>
     b.addEventListener('click', () => { wv.r = +b.dataset.r; wv.offset = 0; renderWords(); }));
   wvEl('wv-surprise').addEventListener('click', () => {
@@ -119,7 +119,7 @@ function renderWords() {
 
   wvEl('wv-slots').innerHTML = wv.slots.slice(0, wv.r).map((opt, i) => {
     const o = WORD_OPTIONS[opt];
-    return `<button class="word-slot slot-${i}" data-i="${i}" title="swap this subdigon" aria-label="slot ${i + 1}: swap this subdigon">
+    return `<button class="word-slot slot-${i}" data-i="${i}" data-tip="Click to swap in the next subdigon. The numbers underneath are its word." aria-label="slot ${i + 1}: swap this subdigon">
       ${renderTreeOverlay(o.faces, o.n, { size: 120 })}
       <span class="slot-word">${slotWord(i).join(' ')}</span>
     </button>`;

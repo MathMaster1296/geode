@@ -495,3 +495,88 @@ footer .math { font-size: 1rem; }
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+
+/* ---------- hover help ---------- */
+#tip {
+  position: absolute;
+  z-index: 50;
+  max-width: 30ch;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  padding: 0.55em 0.8em;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+}
+#tip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 12px; height: 12px;
+  background: var(--ink);
+  transform: translateX(-50%) rotate(45deg);
+}
+#tip.below::after { bottom: auto; top: -6px; }
+.term-def {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--link);
+  text-underline-offset: 3px;
+  cursor: help;
+  border-radius: 2px;
+}
+.term-def:hover { color: var(--link); }
+
+/* ---------- guidance ---------- */
+.howto {
+  max-width: 66ch;
+  margin: 1.6rem auto 0;
+  padding: 0.9rem 1.25rem;
+  font-size: 0.95rem;
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
+}
+.try {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--ink-2);
+  background: var(--plate-2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.55em 0.9em;
+  margin: -0.4rem 0 1.2rem;
+}
+.try b { color: var(--link); font-weight: 600; }
+
+/* ---------- sticky section bar ---------- */
+nav.contents {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  max-width: none;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--hairline);
+  padding: 0.55rem 1.25rem;
+  margin: 1.5rem 0 0;
+}
+nav.contents a.active { color: var(--link); border-color: var(--link); }
+
+/* ---------- affordance polish ---------- */
+button, .slot, .word-slot, .term, .cell, .preset, .action { transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease; }
+.series-line .term { border-bottom: 1px dotted var(--muted); border-radius: 6px 6px 0 0; }
+.series-line .term:hover { border-color: var(--accent); background: var(--plate-2); }
+.gallery .cell:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08); }
+.slot:hover, .word-slot:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08); }
+button.action:hover, button.preset:hover { transform: translateY(-1px); }
+.slot::after, .word-slot::after {
+  content: "click to swap";
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}

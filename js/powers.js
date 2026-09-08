@@ -23,7 +23,7 @@ function pwTerms(level) {
 
 function renderPowers() {
   pwEl('pow-controls').innerHTML = [2, 3, 4].map(r =>
-    `<button class="preset" data-r="${r}" aria-pressed="${r === pw.r}"><b>S</b><sup>${r}</sup> · central ${PW_FACE[r]}s</button>`
+    `<button class="preset" data-r="${r}" aria-pressed="${r === pw.r}" data-tip="The coefficients of S to the power ${r} count subdigons with a ${PW_FACE[r]} against the roof."><b>S</b><sup>${r}</sup> · central ${PW_FACE[r]}s</button>`
   ).join('');
   pwEl('pow-controls').querySelectorAll('button').forEach(b =>
     b.addEventListener('click', () => { pw.r = +b.dataset.r; pw.activeKey = null; renderPowers(); }));
@@ -34,7 +34,7 @@ function renderPowers() {
       const C = powerCoeff(pw.r, m);
       const key = typeKey(m) || 'null';
       return `<span class="term" role="button" tabindex="0" data-key="${key}"
-        title="show the pictures this coefficient counts"
+        data-tip="Click to see the pictures this coefficient counts."
         aria-pressed="${key === pw.activeKey}">${C === 1n ? '' : C}${level === 0 ? '1' : termHTML(m)}</span>`;
     });
     html += rendered.length > 1 ? `(${rendered.join(' + ')})` : rendered.join('');
@@ -77,6 +77,7 @@ function renderPowDetail() {
     gives the same <span class="count-big">${C}</span>.</p>
     <div class="gallery">${kept.map(d =>
       `<span class="cell">${renderSubdigon(d, n, { size: 88, highlightCentral: true, decorative: true })}</span>`).join('')}</div>`;
+  box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
 if (document.getElementById('pow-controls')) renderPowers();

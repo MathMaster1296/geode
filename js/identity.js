@@ -17,10 +17,10 @@ function tPow(k, n) {
 function renderIdentity() {
   const { k, D } = fid;
   fidEl('fid-controls').innerHTML = [2, 3, 4].map(kk =>
-    `<button class="preset" data-k="${kk}" aria-pressed="${kk === k}">${FID_NAMES[kk]} · <span class="math">${tPow(kk, 1)}</span></button>`
+    `<button class="preset" data-k="${kk}" aria-pressed="${kk === k}" data-tip="Use only ${FID_NAMES[kk]}. The series is then a single-variable series in ${FID_NAMES[kk] === "triangles" ? "the Catalan numbers" : "Fuss–Catalan numbers"}.">${FID_NAMES[kk]} · <span class="math">${tPow(kk, 1)}</span></button>`
   ).join('') + `
     <div class="control" style="flex:1;min-width:180px">
-      <label for="fid-slider">cut the series at degree ${D}</label>
+      <label for="fid-slider" class="term-def" data-tip="Keep only the terms up to this degree, then plug the stump into the equation.">cut the series at degree ${D}</label>
       <input type="range" id="fid-slider" min="1" max="9" value="${D}">
     </div>`;
   fidEl('fid-controls').querySelectorAll('[data-k]').forEach(b =>

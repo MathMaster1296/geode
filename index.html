@@ -14,7 +14,7 @@
 
 <a class="skip-link" href="#contents">skip to contents</a>
 <header class="hero">
-  <button class="theme-toggle" id="theme-toggle" aria-label="switch color theme">theme: auto</button>
+  <button class="theme-toggle" id="theme-toggle" aria-label="switch color theme" data-tip="Cycle between following your system, light, and dark.">theme: auto</button>
   <div class="prose">
     <p class="eyebrow">Geode · an interactive companion to three papers · 2025</p>
     <h1>Solving Polynomials with Polygons</h1>
@@ -38,6 +38,8 @@
 </nav>
 
 <main id="main">
+<p class="howto">Everything on this page is live. Words with a dotted underline explain themselves when you hover or tap them, every plate opens with a “Try” line, and each button says what it does when you hover over it.</p>
+
 <section id="story">
   <div class="prose">
     <p class="eyebrow">I · The oldest problem in algebra</p>
@@ -47,21 +49,22 @@
     pattern stopped: in 1824 Abel proved that no such formula exists for degree
     five, and Galois explained why. Ever since, “unsolvable by radicals” has been
     where the textbooks end the story.</p>
-    <p>But radicals were always just one kind of answer. In April 2025,
+    <p>But <span class="term-def" data-tip="A radical is a root: a square root, a cube root, and so on. The classical formulas nest them inside each other.">radicals</span> were always just one kind of answer. In April 2025,
     N.&nbsp;J.&nbsp;Wildberger and Dean Rubine published a different kind in
     <i>The American Mathematical Monthly</i>: an explicit series that solves every
     polynomial equation at once, and its coefficients come from counting pictures,
     with no nested roots anywhere.</p>
-    <p>The pictures are called <strong>subdigons</strong>: a polygon, cut into smaller
-    polygons by diagonals that never cross, with one edge marked as the roof
+    <p>The pictures are called <strong><span class="term-def" data-tip="A polygon cut into smaller polygons by diagonals that never cross, with one edge chosen as the roof.">subdigons</span></strong>: a polygon, cut into smaller
+    polygons by diagonals that never cross, with one edge marked as the <span class="term-def" data-tip="The bottom edge, drawn in blue. It pins the picture down, so rotations and reflections count as different subdigons.">roof</span>
     (drawn <span style="color:var(--link)">blue</span> below). Fix how many triangles,
     quadrilaterals, and pentagons you want, then ask how many different pictures
-    exist. That count is a <strong>hyper-Catalan number</strong>, and it is the whole
+    exist. That count is a <strong><span class="term-def" data-tip="The number of subdigons with a given mix of triangles, quadrilaterals, pentagons, and so on. The Catalan numbers are the triangles-only case.">hyper-Catalan number</span></strong>, and it is the whole
     engine of the formula.</p>
   </div>
 
   <div class="plate" id="explorer">
     <h3 class="plate-title">Plate I · Count the pictures</h3>
+    <p class="try"><b>Try:</b> press + under quadrilaterals and watch the count jump from 21 to 180.</p>
     <div class="face-key" id="face-key"></div>
     <div class="controls" id="explorer-controls"></div>
     <p class="count-line" id="explorer-count" aria-live="polite"></p>
@@ -88,13 +91,14 @@
   <div class="prose">
     <p class="eyebrow">II · The series</p>
     <h2>Every coefficient is a picture count</h2>
-    <p>Now sort every subdigon by the size of its polygon. Level <i>d</i> collects
+    <p>Now sort every subdigon by the size of its polygon. <span class="term-def" data-tip="Subdigons are grouped by the size of their polygon. Level d holds the ones with d + 2 vertices.">Level</span> <i>d</i> collects
     the ones with <i>d</i> + 2 vertices, and each level contributes one bracket to
     a single series <span class="math"><b>S</b></span>. Click any term below to see
     exactly which pictures its coefficient is counting.</p>
   </div>
   <div class="plate">
     <h3 class="plate-title">Plate II · The series, level by level</h3>
+    <p class="try"><b>Try:</b> click 5<i>t</i><sub>2</sub><i>t</i><sub>3</sub> to see the five pictures it counts.</p>
     <div class="series-line" id="series-line"></div>
     <p class="plate-note" id="series-totals"></p>
     <div class="term-detail" id="term-detail" hidden></div>
@@ -103,9 +107,9 @@
     <p>The Monthly paper’s theorem says this series is a solution
     <span class="math"><i>α</i> = <b>S</b></span> of the equation at the top of the
     page. The proof is in the pictures, and it runs on one move. The papers call
-    it the <strong>paneling operator</strong> <span class="math">∇̄<sub>k</sub></span>:
+    it the <strong><span class="term-def" data-tip="The gluing move from the papers. It attaches k subdigons to the free sides of a central polygon and returns one bigger subdigon.">paneling operator</span></strong> <span class="math">∇̄<sub>k</sub></span>:
     take <i>k</i> subdigons, glue them onto the free sides of a central
-    (<i>k</i>+1)-gon, and get one bigger subdigon back. Under the accounting map
+    (<i>k</i>+1)-gon, and get one bigger subdigon back. Under the <span class="term-def" data-tip="ψ turns a picture into the monomial t₂ to the number of triangles times t₃ to the number of quadrilaterals and so on, so counting pictures becomes algebra.">accounting map</span>
     <span class="math"><i>ψ</i></span> that move is exactly the product
     <span class="math"><i>t</i><sub>k</sub><i>ψ</i>(s<sub>1</sub>)⋯<i>ψ</i>(s<sub>k</sub>)</span>,
     so summing over every way to fill the slots gives
@@ -116,6 +120,7 @@
 
   <div class="plate" id="paneling">
     <h3 class="plate-title">Plate II·b · The paneling operator ∇̄</h3>
+    <p class="try"><b>Try:</b> click a slot to swap its subdigon, then press glue.</p>
     <div class="controls" id="pan-controls"></div>
     <div class="controls" id="pan-slots" aria-label="operator slots"></div>
     <p class="count-line" id="pan-psi" aria-live="polite"></p>
@@ -132,11 +137,11 @@
     <p class="eyebrow">III · The playground</p>
     <h2>Watch polygons compute a root</h2>
     <p>Here is the claim in action. Type any equation up to degree five. A change
-    of scale turns it into the geometric form, and the series, evaluated at the
-    resulting <span class="math"><i>t</i><sub>k</sub></span> values, converges to a
+    of scale turns it into the <span class="term-def" data-tip="The equation rescaled so its constant term is 1 and its linear coefficient is −1. The t values are what is left of the other coefficients.">geometric form</span>, and the series, evaluated at the
+    resulting <span class="math"><i>t</i><sub>k</sub></span> values, <span class="term-def" data-tip="The running total settles on one number as more terms are added. When it blows up instead, the series diverges and the picture cannot be trusted.">converges</span> to a
     root as bigger polygons join the sum. When the
     <span class="math"><i>t</i><sub>k</sub></span> are too big the series runs away
-    instead; the paper’s fix is the button below. Re-center the polynomial at your
+    instead; the paper’s fix is the button below. <span class="term-def" data-tip="Rewrite the equation in terms of y = x − a for a good guess a. The t values shrink and the series works again.">Re-center</span> the polynomial at your
     best guess so far, and go again. Wildberger and Rubine demonstrate exactly
     this on John Wallis’s cubic <span class="math"><i>x</i><sup>3</sup> − 2<i>x</i> − 5 = 0</span>,
     a numerical benchmark since 1685; two passes of the series match the true root
@@ -144,24 +149,25 @@
   </div>
   <div class="plate">
     <h3 class="plate-title">Plate III · The root playground</h3>
+    <p class="try"><b>Try:</b> pick the x⁵−x−1 preset, watch the series diverge, then press re-center.</p>
     <div class="controls" id="presets"></div>
     <div class="poly-inputs" id="poly-inputs"></div>
     <p class="plate-note" id="t-readout"></p>
     <div class="controls" style="margin-top:0.75rem">
       <div class="control" style="flex:1;min-width:220px">
-        <label for="level-slider">include polygons up to <span id="level-label"></span> vertices</label>
+        <label for="level-slider" class="term-def" data-tip="More vertices means more terms of the series. Each step adds every subdigon of that size to the sum.">include polygons up to <span id="level-label"></span> vertices</label>
         <input type="range" id="level-slider" min="2" max="14" value="10">
       </div>
-      <button class="action" id="recenter">re-center at current estimate</button>
-      <button class="action" id="reset-center">reset</button>
-      <button class="action" id="copy-link">copy link</button>
-      <button class="action" id="two-pass">replay the paper’s two passes</button>
+      <button class="action" id="recenter" data-tip="Shift the equation so its center is the current estimate, then run the series again. This is the bootstrap step from the paper.">re-center at current estimate</button>
+      <button class="action" id="reset-center" data-tip="Go back to the starting center for this equation.">reset</button>
+      <button class="action" id="copy-link" data-tip="Copy a URL that reproduces this exact equation, center, and slider setting.">copy link</button>
+      <button class="action" id="two-pass" data-tip="Load Wallis’s cubic at center 2, run the series, re-center, and run it once more, exactly as the Monthly paper does.">replay the paper’s two passes</button>
     </div>
     <div class="playground-grid">
       <div>
-        <div class="digits" id="digits-series" tabindex="0"><span class="label">series estimate</span><span class="val"></span></div>
+        <div class="digits" id="digits-series" tabindex="0"><span class="label term-def" data-tip="The center plus the scaled series total, using every polygon up to the size on the slider.">series estimate</span><span class="val"></span></div>
         <div style="height:0.6rem"></div>
-        <div class="digits" id="digits-root" tabindex="0"><span class="label">true root (Durand–Kerner)</span><span class="val"></span></div>
+        <div class="digits" id="digits-root" tabindex="0"><span class="label term-def" data-tip="Durand–Kerner is an ordinary numerical root finder. It is only the answer key here.">true root (Durand–Kerner)</span><span class="val"></span></div>
         <p class="digit-status" id="digit-status" aria-live="polite"></p>
       </div>
       <div>
@@ -180,7 +186,7 @@
     <p>Why did Wallis’s cubic need re-centering? The series only converges when
     the <span class="math"><i>t</i></span> values are small, and for cubics the
     exact region is known. It is the shape below, with corners at
-    <span class="math"><i>t</i><sub>2</sub> = ±¼</span>, the radius of the Catalan
+    <span class="math"><i>t</i><sub>2</sub> = ±¼</span>, the <span class="term-def" data-tip="The largest size of t for which the series still converges.">radius</span> of the Catalan
     series, and <span class="math"><i>t</i><sub>3</sub> = ±4⁄27</span>, the radius
     of the Fuss–Catalan series. Every coefficient of
     <span class="math"><b>S</b></span> is positive, so only the sizes of the
@@ -192,6 +198,7 @@
   </div>
   <div class="plate" id="region">
     <h3 class="plate-title">Plate III·b · Where the series converges</h3>
+    <p class="try"><b>Try:</b> pick the x⁵−x−1 preset above. The dot lands far outside; re-center and it comes home.</p>
     <div class="region-row">
       <div class="chart-wrap" id="region-plot"></div>
       <p class="plate-note" id="region-note" aria-live="polite"></p>
@@ -209,6 +216,7 @@
   </div>
   <div class="plate" id="identity">
     <h3 class="plate-title">Plate III·c · The finite identity</h3>
+    <p class="try"><b>Try:</b> drag the cutoff to 9 and read off the survivor. It is the next Catalan number, 16796.</p>
     <div class="controls" id="fid-controls"></div>
     <p class="series-line" id="fid-series" style="font-size:1.05rem" tabindex="0"></p>
     <p class="series-line" id="fid-residual" style="font-size:1.05rem" tabindex="0"></p>
@@ -233,8 +241,9 @@
 
   <div class="plate" id="central">
     <h3 class="plate-title">Plate IV · Who sits against the roof</h3>
+    <p class="try"><b>Try:</b> pick 2 triangles + 1 pentagon. The 28 pictures split exactly in half.</p>
     <p style="margin-top:0">Of the <span class="math"><i>C</i><sub><b>m</b></sub></span> subdigons of a
-    given type, how many have a triangle as the central face, the one touching the
+    given type, how many have a triangle as the <span class="term-def" data-tip="The face that touches the roof edge.">central face</span>, the one touching the
     roof? The Involve paper’s Theorem 5 gives an exact fraction:
     <span class="math"><i>r</i> · <i>m</i><sub>r</sub> · <i>C</i><sub><b>m</b></sub> / (<i>E</i><sub><b>m</b></sub> − 1)</span>
     of them have an (<i>r</i>+1)-gon there. Pick a type and check.</p>
@@ -252,6 +261,7 @@
   </div>
   <div class="plate" id="powers">
     <h3 class="plate-title">Plate IV·b · Powers of the series</h3>
+    <p class="try"><b>Try:</b> switch to <b>S</b><sup>3</sup> and click 3<i>t</i><sub>3</sub>. All three pictures have a quadrilateral against the roof.</p>
     <div class="controls" id="pow-controls"></div>
     <div class="series-line" id="pow-line"></div>
     <div class="term-detail" id="pow-detail" hidden></div>
@@ -259,6 +269,7 @@
 
   <div class="plate" id="words">
     <h3 class="plate-title">Plate V · From picture to word</h3>
+    <p class="try"><b>Try:</b> press surprise me, then rotate until the badge says yes.</p>
     <p style="margin-top:0">The tidy fractions above exist because every subdigon
     is secretly a tree, and every tree is secretly a word. Put a node in each
     face, join the faces that share a diagonal, and root the tree at the central
@@ -273,7 +284,7 @@
     <div class="word-slots" id="wv-slots"></div>
     <div class="word-line" id="wv-word" aria-label="the combined word, current rotation"></div>
     <div class="controls" style="margin-top:0.8rem">
-      <button class="action" id="wv-rotate">rotate ⟳</button>
+      <button class="action" id="wv-rotate" data-tip="Move the first letter to the end and parse again.">rotate ⟳</button>
       <span class="badge" id="wv-badge" aria-live="polite"></span>
     </div>
     <p class="plate-note">Reading from the right, a letter <i>k</i> followed by
@@ -285,6 +296,7 @@
 
   <div class="plate" id="geode">
     <h3 class="plate-title">Plate VI · The Geode</h3>
+    <p class="try"><b>Try:</b> read the first column. 1, 2, 5, 14, 42 are the Catalan numbers, shifted by one.</p>
     <p style="margin-top:0">One more thing fell out of the Monthly paper. Group the
     series by faces and a factorization appears:
     <span class="math"><b>S</b> − 1 = (<i>t</i><sub>2</sub> + <i>t</i><sub>3</sub> + <i>t</i><sub>4</sub> + ⋯) · <b>G</b></span>.
@@ -344,7 +356,7 @@
   Every number on this page is computed in your browser. On load, the site
   re-enumerates the small subdigons and checks them against the closed formulas:
   <span id="self-check">running self-check…</span></p>
-  <p><a href="https://github.com/MathMaster1296">GitHub</a> · MIT license</p>
+  <p><a href="https://github.com/prathammukewar/geode">GitHub</a> · MIT license</p>
 </footer>
 
 <script type="module" src="js/app.js"></script>

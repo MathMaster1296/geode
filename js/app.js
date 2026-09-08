@@ -1,6 +1,6 @@
 import {
   enumerateDissections, typeOf, typeKey, hyperCatalan, vertexCount, edgeCount,
-  faceCount, subdigonsOfType, typeVectors, centralCount, geodeBiTri,
+  faceCount, subdigonsOfType, typeVectors, centralCount, geodeBiTri, centralFace,
 } from './subdigons.js';
 import { toGeometricForm, seriesPartials, shiftPoly, evalPoly, allRoots, newtonStep } from './solver.js';
 import { renderSubdigon, describeType, termHTML } from './viz.js';
@@ -8,6 +8,7 @@ import './paneling.js';
 import './identity.js';
 import './powers.js';
 import './words.js';
+import './tips.js';
 
 const $ = id => document.getElementById(id);
 const FACE_LABELS = { 2: 'triangle', 3: 'quadrilateral', 4: 'pentagon', 5: 'hexagon' };
@@ -70,9 +71,9 @@ function renderExplorerControls() {
     div.className = 'control';
     div.innerHTML = `<label>${FACE_LABELS[k]}s</label>
       <span class="stepper">
-        <button type="button" data-k="${k}" data-d="-1" aria-label="fewer ${FACE_LABELS[k]}s">−</button>
+        <button type="button" data-k="${k}" data-d="-1" aria-label="fewer ${FACE_LABELS[k]}s" data-tip="One fewer ${FACE_LABELS[k]}.">−</button>
         <output>${explorerState[k]}</output>
-        <button type="button" data-k="${k}" data-d="1" aria-label="more ${FACE_LABELS[k]}s">+</button>
+        <button type="button" data-k="${k}" data-d="1" aria-label="more ${FACE_LABELS[k]}s" data-tip="One more ${FACE_LABELS[k]}.">+</button>
       </span>`;
     wrap.appendChild(div);
   }
@@ -117,8 +118,11 @@ function renderExplorer() {
     : `<span class="math"><i>C</i>[${describeType(m)}]</span> = ${formulaHTML(m)} =
        <span class="count-big">${C}</span> subdigon${C === 1n ? '' : 's'} of a ${n}-gon`;
   const shown = subs.slice(0, 144);
-  $('explorer-gallery').innerHTML = shown.map(d =>
-    `<span class="cell">${renderSubdigon(d, n, { size: 104, decorative: true })}</span>`).join('');
+  $('explorer-gallery').innerHTML = shown.map(d => {
+    const cf = d.length ? centralFace(d, n) : null;
+    const tipText = cf ? `Central face: ${FACE_LABELS[cf.length - 1]}. Every diagonal here came from one gluing move.` : 'The bare roof edge.';
+    return `<span class="cell" data-tip="${tipText}">${renderSubdigon(d, n, { size: 104, decorative: true })}</span>`;
+  }).join('');
   if (subs.length > shown.length) {
     flashNote(`showing 144 of ${subs.length}.`);
   } else renderExplorerNote();
@@ -146,7 +150,7 @@ function renderSeries() {
       const key = typeKey(m) || 'null';
       const pressed = key === activeTermKey;
       return `<span class="term" role="button" tabindex="0" data-key="${key}"
-        title="show the pictures this coefficient counts"
+        data-tip="Click to see the pictures this coefficient counts."
         aria-pressed="${pressed}">${C === 1n ? '' : C}${level === 0 ? '1' : termHTML(m)}</span>`;
     }).join(' + ');
     html += terms.length > 1 ? `(${rendered})` : rendered;
@@ -186,21 +190,26 @@ function renderTermDetail() {
     <span class="math">${describeType(m)}</span> on a ${n}-gon.</p>
     <div class="gallery">${subs.map(d =>
       `<span class="cell">${renderSubdigon(d, n, { size: 88, decorative: true })}</span>`).join('')}</div>`;
+  box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 renderSeries();
 
 /* ---------- Plate III: playground ---------- */
 const PRESETS = [
-  { id: 'wallis', label: 'Wallis 1685 · x³−2x−5', coeffs: [-5, -2, 0, 1, 0, 0], center: 2 },
-  { id: 'sin10', label: 'sin 10° · 8x³−6x+1', coeffs: [1, -6, 0, 8, 0, 0], center: 0 },
-  { id: 'catalan', label: 'pure Catalan · 0.2x²−x+1', coeffs: [1, -1, 0.2, 0, 0, 0], center: 0 },
-  { id: 'quintic', label: 'x⁵−x−1 · no radical formula', coeffs: [-1, -1, 0, 0, 0, 1], center: 1 },
+  { id: 'wallis', label: 'Wallis 1685 · x³−2x−5', coeffs: [-5, -2, 0, 1, 0, 0], center: 2,
+    tip: 'John Wallis used this cubic in 1685 to show off Newton’s method. The Monthly paper uses it the same way.' },
+  { id: 'sin10', label: 'sin 10° · 8x³−6x+1', coeffs: [1, -6, 0, 8, 0, 0], center: 0,
+    tip: 'The root of this cubic is exactly sin 10°, a number with no closed form in real radicals.' },
+  { id: 'catalan', label: 'pure Catalan · 0.2x²−x+1', coeffs: [1, -1, 0.2, 0, 0, 0], center: 0,
+    tip: 'With only an x² term, the series is the plain Catalan generating function.' },
+  { id: 'quintic', label: 'x⁵−x−1 · no radical formula', coeffs: [-1, -1, 0, 0, 0, 1], center: 1,
+    tip: 'No formula in radicals exists for this quintic. The series diverges at the starting center, so press re-center.' },
 ];
 const play = { coeffs: [...PRESETS[0].coeffs], center: PRESETS[0].center, baseCenter: PRESETS[0].center, maxV: 10, preset: 'wallis' };
 
 function renderPresets() {
   $('presets').innerHTML = PRESETS.map(p =>
-    `<button class="preset" data-id="${p.id}" aria-pressed="${play.preset === p.id}">${p.label}</button>`).join('');
+    `<button class="preset" data-id="${p.id}" aria-pressed="${play.preset === p.id}" data-tip="${p.tip}">${p.label}</button>`).join('');
   $('presets').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
     const p = PRESETS.find(x => x.id === b.dataset.id);
     play.coeffs = [...p.coeffs];
@@ -257,7 +266,7 @@ function runPlayground() {
   const isComplex = Math.abs(root.im) > 1e-8;
 
   const tline = Object.entries(ts).map(([k, v]) =>
-    `<span class="math"><i>t</i><sub>${k}</sub></span> = ${fmtT(v)}`).join(' · ') || 'all t are 0';
+    `<span class="term-def" data-tip="What the x^${k} coefficient becomes after rescaling. The series converges when these numbers are small."><span class="math"><i>t</i><sub>${k}</sub></span> = ${fmtT(v)}</span>`).join(' · ') || 'all t are 0';
   const centerNote = play.center !== 0 ? ` · centered at <b>${+play.center.toPrecision(8)}</b>` : '';
 
   const incs = [];
@@ -607,4 +616,21 @@ renderCentral();
   $('self-check').textContent = bad === 0
     ? `${checks} counts verified ✓`
     : `${bad} of ${checks} checks FAILED`;
+}
+
+/* ---------- section bar: highlight where the reader is ---------- */
+{
+  const links = [...document.querySelectorAll('nav.contents a')];
+  const byId = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      links.forEach(a => a.classList.remove('active'));
+      byId.get(e.target.id)?.classList.add('active');
+    }
+  }, { rootMargin: '-35% 0px -55% 0px' });
+  for (const id of byId.keys()) {
+    const sec = document.getElementById(id);
+    if (sec) io.observe(sec);
+  }
 }
