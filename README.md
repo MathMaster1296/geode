@@ -1,5 +1,7 @@
 # Geode
 
+![The title Solving Polynomials with Polygons above the eleven subdivided pentagons](assets/og.png)
+
 Live at [prathammukewar.github.io/geode](https://prathammukewar.github.io/geode/).
 
 In 2025, Wildberger and Rubine published a power series that solves every
@@ -56,6 +58,18 @@ step, so GitHub Pages serves the repo as-is.
   Polynomial Equations, and the Geode*, The American Mathematical Monthly
   132:5 (2025). [doi:10.1080/00029890.2025.2460966](https://doi.org/10.1080/00029890.2025.2460966)
 
+## Embed a plate
+
+Any plate can stand alone inside an iframe. Add `?embed=` and the plate's id
+to the address, for example `?embed=explorer`, `?embed=paneling`,
+`?embed=playground-plate`, `?embed=identity`, or `?embed=words`:
+
+```html
+<iframe src="https://prathammukewar.github.io/geode/?embed=explorer"
+        width="100%" height="720" style="border:0"
+        title="Geode: count the pictures"></iframe>
+```
+
 ## Run locally
 
 ```
@@ -92,3 +106,4 @@ zero.
 | `js/app.js` | page wiring |
 | `extension/` | the "Subdigon of the Day" new-tab Chrome extension |
 | `build.mjs` | bundles everything into `dist/single.html` |
+| `assets/` | favicon, app icons, and the social preview image |

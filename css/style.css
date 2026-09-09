@@ -580,3 +580,21 @@ button.action:hover, button.preset:hover { transform: translateY(-1px); }
   letter-spacing: 0.08em;
   color: var(--muted);
 }
+
+/* ---------- byline, share, cite ---------- */
+.byline { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-2); margin: -0.6rem auto 0; }
+.hero-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.6rem; }
+.hero-actions .hero-cta { margin-top: 1.6rem; font: inherit; font-family: var(--mono); font-size: 0.85rem; cursor: pointer; }
+.bibtex {
+  font-family: var(--mono); font-size: 0.8rem; line-height: 1.5;
+  background: var(--paper); border: 1px solid var(--hairline); border-radius: 10px;
+  padding: 0.9rem 1rem; overflow-x: auto; margin: 0 0 1rem;
+}
+
+/* ---------- embed mode: one plate, nothing else ---------- */
+body.embed > *:not(main):not(#tip) { display: none; }
+body.embed main > * { display: none; }
+body.embed main section:has(.embed-target) { display: block; padding: 0; }
+body.embed section:has(.embed-target) > *:not(.embed-target) { display: none; }
+body.embed .plate.embed-target { margin: 0; max-width: none; border: none; border-radius: 0; }
+.embed-foot { font-family: var(--mono); font-size: 0.75rem; margin: 1rem 0 0; text-align: right; }

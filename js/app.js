@@ -634,3 +634,43 @@ renderCentral();
     if (sec) io.observe(sec);
   }
 }
+
+/* ---------- share, cite, embed ---------- */
+{
+  const share = $('share-btn');
+  const flash = (btn, text, back) => { btn.textContent = text; setTimeout(() => { btn.textContent = back; }, 1800); };
+  if (share) share.addEventListener('click', async () => {
+    const data = {
+      title: 'Solving Polynomials with Polygons',
+      text: 'Quintics have no formula in radicals. This page solves them anyway, by counting polygons.',
+      url: location.origin + location.pathname,
+    };
+    if (navigator.share) {
+      try { await navigator.share(data); } catch { /* the person closed the sheet */ }
+      return;
+    }
+    navigator.clipboard.writeText(data.url).then(() => flash(share, 'link copied ✓', 'share this page'))
+      .catch(() => flash(share, 'copy the address bar', 'share this page'));
+  });
+  const bib = $('copy-bibtex');
+  if (bib) bib.addEventListener('click', () => {
+    navigator.clipboard.writeText($('bibtex').textContent).then(() => flash(bib, 'copied ✓', 'copy BibTeX'))
+      .catch(() => flash(bib, 'select the text above', 'copy BibTeX'));
+  });
+  const emb = $('copy-embed');
+  if (emb) emb.addEventListener('click', () => {
+    const code = `<iframe src="https://prathammukewar.github.io/geode/?embed=explorer" width="100%" height="720" style="border:0" title="Geode: count the pictures"></iframe>`;
+    navigator.clipboard.writeText(code).then(() => flash(emb, 'copied ✓', 'copy embed code'))
+      .catch(() => flash(emb, 'copy failed', 'copy embed code'));
+  });
+
+  // ?embed=<plate id> shows a single plate for use inside an iframe
+  const wanted = new URLSearchParams(location.search).get('embed');
+  const plate = wanted && document.getElementById(wanted);
+  if (plate && plate.classList.contains('plate')) {
+    document.body.classList.add('embed');
+    plate.classList.add('embed-target');
+    plate.insertAdjacentHTML('beforeend',
+      `<p class="embed-foot"><a href="${location.origin + location.pathname}" target="_top">part of Geode: solving polynomials with polygons ↗</a></p>`);
+  }
+}

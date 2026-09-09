@@ -4,7 +4,42 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Solving Polynomials with Polygons</title>
-<meta name="description" content="An interactive companion to the hyper-Catalan series solution of polynomial equations: subdigons, the series, a root playground, and the Geode.">
+<meta name="description" content="No formula in radicals exists for degree five. This page solves quintics anyway, by counting subdivided polygons. An interactive companion to the hyper-Catalan series papers.">
+<link rel="canonical" href="https://prathammukewar.github.io/geode/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#FBFAF7">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Geode">
+<meta property="og:title" content="Solving Polynomials with Polygons">
+<meta property="og:description" content="No formula in radicals exists for degree five. This page solves quintics anyway, by counting subdivided polygons. An interactive companion to the hyper-Catalan series papers.">
+<meta property="og:url" content="https://prathammukewar.github.io/geode/">
+<meta property="og:image" content="https://prathammukewar.github.io/geode/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The title Solving Polynomials with Polygons above the eleven subdivided pentagons">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Solving Polynomials with Polygons">
+<meta name="twitter:description" content="No formula in radicals exists for degree five. This page solves quintics anyway, by counting subdivided polygons. An interactive companion to the hyper-Catalan series papers.">
+<meta name="twitter:image" content="https://prathammukewar.github.io/geode/assets/og.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Geode",
+  "alternateName": "Solving Polynomials with Polygons",
+  "url": "https://prathammukewar.github.io/geode/",
+  "description": "No formula in radicals exists for degree five. This page solves quintics anyway, by counting subdivided polygons. An interactive companion to the hyper-Catalan series papers.",
+  "author": { "@type": "Person", "name": "Pratham Mukewar" },
+  "about": ["hyper-Catalan numbers", "Catalan numbers", "polynomial equations", "combinatorics"],
+  "citation": [
+    { "@type": "ScholarlyArticle", "name": "Finite Interpretations of a Hyper-Catalan Series Solution to Polynomial Equations and Visualizations", "author": { "@type": "Person", "name": "Pratham Mukewar" }, "url": "https://arxiv.org/abs/2507.20003" },
+    { "@type": "ScholarlyArticle", "name": "Finite Interpretation of the Hyper-Catalan Series Zero and its Powers", "author": [{ "@type": "Person", "name": "Dean Rubine" }, { "@type": "Person", "name": "Pratham Mukewar" }], "url": "https://arxiv.org/abs/2508.06739" },
+    { "@type": "ScholarlyArticle", "name": "A Hyper-Catalan Series Solution to Polynomial Equations, and the Geode", "author": [{ "@type": "Person", "name": "N. J. Wildberger" }, { "@type": "Person", "name": "Dean Rubine" }], "url": "https://doi.org/10.1080/00029890.2025.2460966" }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&family=Spline+Sans+Mono:wght@400..600&display=swap">
@@ -21,12 +56,16 @@
     <p class="lede">In 2025, mathematicians found the roots of every polynomial equation
     hiding inside counts of subdivided polygons. This page lets you play with the
     discovery, and with two papers that grew out of it.</p>
+    <p class="byline">Built by Pratham Mukewar, MIT class of 2030 and co-author of two of the three papers.</p>
   </div>
   <div class="hero-band" id="hero-band" role="img" aria-label="the eleven subdigons of the pentagon"></div>
   <p class="plate-note" style="text-align:center">The eleven subdigons of the pentagon. The series below knows them as
     <span class="math">5<i>t</i><sub>2</sub><sup>3</sup> + 5<i>t</i><sub>2</sub><i>t</i><sub>3</sub> + <i>t</i><sub>4</sub></span>.</p>
   <div class="display-math hero-eq" tabindex="0"><i>α</i> = 1 + <i>t</i><sub>2</sub><i>α</i><sup>2</sup> + <i>t</i><sub>3</sub><i>α</i><sup>3</sup> + <i>t</i><sub>4</sub><i>α</i><sup>4</sup> + ⋯</div>
-  <div style="text-align:center"><a class="hero-cta" href="#playground">skip to the playground ↓</a></div>
+  <div class="hero-actions">
+    <a class="hero-cta" href="#playground">skip to the playground ↓</a>
+    <button class="hero-cta" id="share-btn" data-tip="Send this page to someone, or copy the link.">share this page</button>
+  </div>
 </header>
 
 <nav class="contents" id="contents" aria-label="contents">
@@ -96,7 +135,7 @@
     a single series <span class="math"><b>S</b></span>. Click any term below to see
     exactly which pictures its coefficient is counting.</p>
   </div>
-  <div class="plate">
+  <div class="plate" id="series-plate">
     <h3 class="plate-title">Plate II · The series, level by level</h3>
     <p class="try"><b>Try:</b> click 5<i>t</i><sub>2</sub><i>t</i><sub>3</sub> to see the five pictures it counts.</p>
     <div class="series-line" id="series-line"></div>
@@ -147,7 +186,7 @@
     a numerical benchmark since 1685; two passes of the series match the true root
     to sixteen decimal places.</p>
   </div>
-  <div class="plate">
+  <div class="plate" id="playground-plate">
     <h3 class="plate-title">Plate III · The root playground</h3>
     <p class="try"><b>Try:</b> pick the x⁵−x−1 preset, watch the series diverge, then press re-center.</p>
     <div class="controls" id="presets"></div>
@@ -345,6 +384,26 @@
     newsroom piece on the Monthly paper,
     <a href="https://www.unsw.edu.au/newsroom/news/2025/05/mathematician-solves-algebras-oldest-problem-using-intriguing-new-number-sequences">“Mathematician solves algebra’s oldest problem”</a> (May 2025),
     and Wildberger’s <a href="https://njwildberger.com/tag/geode/">blog posts on the Geode</a>.</p>
+  </div>
+  <div class="plate" id="cite">
+    <h3 class="plate-title">Use this page</h3>
+    <p style="margin-top:0">Teaching Catalan numbers, giving a talk, or writing about the series?
+    Link to the page, or drop one plate straight into your own site: add
+    <span class="math">?embed=explorer</span> to the address (or
+    <span class="math">paneling</span>, <span class="math">playground-plate</span>,
+    <span class="math">words</span>, and so on) and it shows that plate alone, ready
+    for an iframe. To cite it:</p>
+    <pre class="bibtex" id="bibtex" tabindex="0">@misc{mukewar2026geode,
+  author       = {Pratham Mukewar},
+  title        = {Geode: Solving Polynomials with Polygons},
+  year         = {2026},
+  howpublished = {\url{https://prathammukewar.github.io/geode/}},
+  note         = {Interactive companion to arXiv:2507.20003 and arXiv:2508.06739}
+}</pre>
+    <div class="controls">
+      <button class="action" id="copy-bibtex" data-tip="Copy the BibTeX entry.">copy BibTeX</button>
+      <button class="action" id="copy-embed" data-tip="Copy an iframe that embeds the subdigon explorer.">copy embed code</button>
+    </div>
   </div>
 </section>
 
